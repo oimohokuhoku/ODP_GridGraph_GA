@@ -1,15 +1,11 @@
 #include "embeddPartialGraph.hpp"
 
-//BUG: 未検証
 #include <vector>
 #include <algorithm>
 #include "odpGridGraphs/include/gridGraphs.hpp"
 #include "commonLib/randoms/random.hpp"
 using namespace Cselab23Kimura::OdpGridGraphs;
 using namespace Cselab23Kimura::OdpGridGraphs::GA;
-
-//デバッグ用
-#include <iostream>
 
 /// @brief indiv0にindiv1の部分グラフを埋め込む.
 /// @param embeddMap インデックスが頂点の一次元表記に対応する配列.

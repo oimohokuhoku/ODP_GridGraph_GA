@@ -49,9 +49,11 @@ GridGraph::~GridGraph() {
 	if(adjacent != nullptr) {
 		for(int i = 0; i < _numNode; ++i) delete[] adjacent[i];
 		delete[] adjacent;
+		adjacent = nullptr;
 	}
 	if(nodeDegrees != nullptr) {
 		delete[] nodeDegrees;
+		nodeDegrees = nullptr;
 	}
 }
 

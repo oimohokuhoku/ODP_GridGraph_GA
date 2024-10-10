@@ -7,6 +7,7 @@
 #include "../src/copySelect/copySelect.hpp"
 #include "../src/copySelect/stairsSelect.hpp"
 
+#include "../src/crossover/blockCrossover.hpp"
 #include "../src/crossover/blockCrossoverWithDmsxf.hpp"
 #include "../src/crossover/crossover.hpp"
 #include "../src/crossover/embeddPartialGraph.hpp" 
