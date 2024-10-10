@@ -43,10 +43,10 @@ int main(int argc, char* argv[]) {
     Systems::Directory::create(executedDirName);
 
     std::mt19937 random(gaConfig.seed());
-    unique_ptr<Initialize> initialize(new RandomInitialize());
+    unique_ptr<Initialize> initialize(new NeighborInitialize("w10h10d4r2_best.edges", 10));
     unique_ptr<CopySelect> copySelect(new StairsSelect());
     unique_ptr<GenerateEmbeddMapUnits> embeddMapUnits(new GenerateOrthogonalBlockEmbeddMapUnits());
-    unique_ptr<Crossover> crossover(new BlockCrossoverWithDMSXf(embeddMapUnits));
+    unique_ptr<Crossover> crossover(new BlockCrossover(embeddMapUnits));
     unique_ptr<Mutate> mutate(new TwoChangeMutate(gaConfig.indivMutateProbability(), gaConfig.geneMutateProbability()));
     unique_ptr<SurvivorSelect> survivorSelect(new PassAllChild());
     

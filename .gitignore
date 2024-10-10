@@ -1,0 +1,7 @@
+*.exe
+*.edges
+*@login.cloud.r-ccs.riken.jp
+.vs/
+.vscode/
+result/
+_objectFiles
