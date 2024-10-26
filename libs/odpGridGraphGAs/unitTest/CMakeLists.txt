@@ -1,0 +1,3 @@
+add_subdirectory(copySelect/randomSelectWithoutReplacement)
+add_subdirectory(survivorSelect/rankingSelect)
+add_subdirectory(group)
