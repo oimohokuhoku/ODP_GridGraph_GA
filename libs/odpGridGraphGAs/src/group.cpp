@@ -52,6 +52,7 @@ Group& Group::operator=(const Group& obj) {
 
 void Group::operator=(Group&& obj) {
 	this->indivs          = obj.indivs;
+	this->_population     = obj._population;
 	this->_bestIndivIndex = obj._bestIndivIndex;
 	this->_averageAspl    = obj._averageAspl;
 	this->_worstAspl      = obj._worstAspl;

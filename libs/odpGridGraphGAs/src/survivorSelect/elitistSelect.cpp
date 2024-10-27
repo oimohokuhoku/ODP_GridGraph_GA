@@ -15,12 +15,14 @@ Group ElitistSelect::moveSurvivors(Group& childs, Group& parents, std::mt19937& 
         if(childs.indivs[i].betterThan(elitist)) {
             selectedGroup = CHILDS_GROUP;
             selectedIndex = i;
+            elitist = childs.indivs[i];
         }
     }
     for(int i = 0; i < parents.population(); ++i) {
         if(parents.indivs[i].betterThan(elitist)) {
             selectedGroup = PARENTS_GROUP;
             selectedIndex = i;
+            elitist = parents.indivs[i];
         }
     }
 

@@ -11,7 +11,7 @@ namespace Cselab23Kimura::OdpGridGraphs::GA {
         class MixSelect: public SurvivorSelect {
         public:
             MixSelect(std::vector<std::unique_ptr<SurvivorSelect>>& selects);
-            ~MixSelect();
+            ~MixSelect() = default;
             Group moveSurvivors(Group& childs, Group& parents, std::mt19937& random) override;
         private:
             std::vector<std::unique_ptr<SurvivorSelect>>& _selects;

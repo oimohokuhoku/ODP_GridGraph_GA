@@ -1,5 +1,5 @@
-graphNumRow=10
-graphNumColumn=10
+graphNumRow=5
+graphNumColumn=5
 graphDegree=4
 graphMaxLength=2
 maxGeneration=1000

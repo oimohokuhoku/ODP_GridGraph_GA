@@ -10,6 +10,7 @@ using std::cout;
 using std::endl;
 using std::string;
 using std::unique_ptr;
+using std::make_unique;
 
 static const string OPTION_NUM_ROW     = "-r";
 static const string OPTION_NUM_COLUMN  = "-c";
@@ -45,7 +46,7 @@ int main(int argc, char* argv[]) {
 
     std::mt19937 random(gaConfig.seed());
 
-    unique_ptr<Initialize> initialize(new NeighborInitialize("w10h10d4r2_best.edges", 10));
+    unique_ptr<Initialize> initialize(new RandomInitialize());
 
     unique_ptr<CopySelects::CopySelect> copySelect(new CopySelects::RandomSelectWithoutReplacement(gaConfig.seed()));
 
@@ -54,7 +55,10 @@ int main(int argc, char* argv[]) {
 
     unique_ptr<Mutates::Mutate> mutate(new Mutates::TwoChangeMutate(gaConfig.indivMutateProbability(), gaConfig.geneMutateProbability()));
 
-    unique_ptr<SurvivorSelects::SurvivorSelect> survivorSelect(new SurvivorSelects::PassAllChild());
+    std::vector<unique_ptr<SurvivorSelects::SurvivorSelect>> survivorSelects;
+    survivorSelects.push_back(make_unique<SurvivorSelects::ElitistSelect>());
+    survivorSelects.push_back(make_unique<SurvivorSelects::RankingSelect>());
+    unique_ptr<SurvivorSelects::SurvivorSelect> survivorSelect(new SurvivorSelects::MixSelect(survivorSelects));
     
     GeneticAlgorithm ga(gaConfig, initialize, random);
     GAParameterTable paramTable;
