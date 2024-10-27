@@ -1,6 +1,6 @@
 *.exe
 *.edges
-*@login.cloud.r-ccs.riken.jp
+.build/
 .vs/
 .vscode/
 result/

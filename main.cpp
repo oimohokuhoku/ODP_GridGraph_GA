@@ -1,10 +1,11 @@
 #include <iostream>
 #include <memory>
 #include <random>
-#include "odpGridGraphGAs/include/odpGridGraphGAs.hpp"
-#include "commonLib/programs/commandLineArgument.hpp"
-#include "commonLib/systems/directory.hpp"
+#include "odpGridGraphGAs.hpp"
+#include "commonLibraries.hpp"
 using namespace Cselab23Kimura::OdpGridGraphs::GA;
+using namespace Cselab23Kimura::CommonLibrarys;
+
 using std::cout;
 using std::endl;
 using std::string;
@@ -22,7 +23,7 @@ static const string OPTION_GENE_MUTATE_PROBABILITY   = "-gm";
 static const string OPTION_SEED = "-seed";
 
 int main(int argc, char* argv[]) {
-    Programs::CommandLineArgument args(argc, argv);
+    CommandLineArgument args(argc, argv);
     GAConfiguration gaConfig;
     gaConfig.setGraphNumRow(args.getValue<int>(OPTION_NUM_ROW)); 
     gaConfig.setGraphNumColumn(args.getValue<int>(OPTION_NUM_COLUMN)); 
@@ -39,16 +40,21 @@ int main(int argc, char* argv[]) {
     string resultDirName   = "result";
     string executedDirName = resultDirName + "/" + gaConfig.toDirectoryNameString();
     string transFileName   = executedDirName + "/transition.csv";
-    Systems::Directory::create(resultDirName);
-    Systems::Directory::create(executedDirName);
+    Directory::create(resultDirName);
+    Directory::create(executedDirName);
 
     std::mt19937 random(gaConfig.seed());
+
     unique_ptr<Initialize> initialize(new NeighborInitialize("w10h10d4r2_best.edges", 10));
-    unique_ptr<CopySelect> copySelect(new StairsSelect());
-    unique_ptr<GenerateEmbeddMapUnits> embeddMapUnits(new GenerateOrthogonalBlockEmbeddMapUnits());
-    unique_ptr<Crossover> crossover(new BlockCrossover(embeddMapUnits));
-    unique_ptr<Mutate> mutate(new TwoChangeMutate(gaConfig.indivMutateProbability(), gaConfig.geneMutateProbability()));
-    unique_ptr<SurvivorSelect> survivorSelect(new PassAllChild());
+
+    unique_ptr<CopySelects::CopySelect> copySelect(new CopySelects::RandomSelectWithoutReplacement(gaConfig.seed()));
+
+    unique_ptr<Crossovers::GenerateEmbeddMapUnits> embeddMapUnits(new Crossovers::GenerateOrthogonalBlockEmbeddMapUnits());
+    unique_ptr<Crossovers::Crossover> crossover(new Crossovers::BlockCrossover(embeddMapUnits));
+
+    unique_ptr<Mutates::Mutate> mutate(new Mutates::TwoChangeMutate(gaConfig.indivMutateProbability(), gaConfig.geneMutateProbability()));
+
+    unique_ptr<SurvivorSelects::SurvivorSelect> survivorSelect(new SurvivorSelects::PassAllChild());
     
     GeneticAlgorithm ga(gaConfig, initialize, random);
     GAParameterTable paramTable;
