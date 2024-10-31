@@ -32,11 +32,12 @@ Group RankingSelect::moveSurvivors(Group& childs, Group& parents, std::mt19937& 
 
     //nullオブジェクトを除外
     for(int i = 0; i < numIndiv; ++i) {
-        if(indivs[order[i]]->adjacent == nullptr) { numIndiv = i; break; }
+        if(indivs[order[i]]->adjacent == nullptr) { numIndiv--; }
     }
 
     Group result(1);
     int sumRank = ((numIndiv - 1) * numIndiv) / 2; //sum of 0 to (numIndiv-1)
+
     int r = random() % sumRank;
     for(int i = 0; i < numIndiv; ++i) {
         r -= (numIndiv - i) + 1;

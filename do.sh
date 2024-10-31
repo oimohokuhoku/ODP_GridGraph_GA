@@ -1,5 +1,5 @@
-graphNumRow=5
-graphNumColumn=5
+graphNumRow=10
+graphNumColumn=10
 graphDegree=4
 graphMaxLength=2
 maxGeneration=1000
@@ -19,4 +19,5 @@ seed=42
     -m $generationChangeModel \
     -im $indivMutateProbability \
     -gm $geneMutateProbability \
-    -seed $seed;
+    -seed $seed \
+    -n 25;

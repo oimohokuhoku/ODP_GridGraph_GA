@@ -81,10 +81,6 @@ void GeneticAlgorithm::progressGeneration(
     *(this->_group) = std::move(nextGroup);
     this->_group->tally();
     this->_generation++;
-
-    if(_group->bestIndiv().betterThan(*(this->_bestEverGraph))) {
-        *(this->_bestEverGraph) = _group->bestIndiv();
-    }
 }
 
 /// @brief 終了条件を満たしているか.

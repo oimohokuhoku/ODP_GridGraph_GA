@@ -21,7 +21,10 @@ static const string OPTION_MAX_GENERATION = "-g";
 static const string OPTION_GENERATION_CHANGE_MODEL  = "-m";
 static const string OPTION_INDIV_MUTATE_PROBABILITY = "-im";
 static const string OPTION_GENE_MUTATE_PROBABILITY   = "-gm";
+static const string OPTION_RESULT_FILENAME = "-f";
 static const string OPTION_SEED = "-seed";
+
+static const string OPTION_NUM_MUTATE = "-n";
 
 int main(int argc, char* argv[]) {
     CommandLineArgument args(argc, argv);
@@ -40,13 +43,16 @@ int main(int argc, char* argv[]) {
 
     string resultDirName   = "result";
     string executedDirName = resultDirName + "/" + gaConfig.toDirectoryNameString();
+    if(args.existOption(OPTION_RESULT_FILENAME)) {
+        executedDirName = resultDirName + "/" + args.getValue<string>(OPTION_RESULT_FILENAME);
+    }
     string transFileName   = executedDirName + "/transition.csv";
     Directory::create(resultDirName);
     Directory::create(executedDirName);
 
     std::mt19937 random(gaConfig.seed());
 
-    unique_ptr<Initialize> initialize(new RandomInitialize());
+    unique_ptr<Initialize> initialize(new NeighborInitialize("w10h10d4r2_best.edges", args.getValue<int>(OPTION_NUM_MUTATE)));
 
     unique_ptr<CopySelects::CopySelect> copySelect(new CopySelects::RandomSelectWithoutReplacement(gaConfig.seed()));
 
