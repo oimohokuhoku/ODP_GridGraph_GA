@@ -1,5 +1,4 @@
 *.exe
-*.edges
 .build/
 .vs/
 .vscode/

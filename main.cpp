@@ -24,8 +24,6 @@ static const string OPTION_GENE_MUTATE_PROBABILITY   = "-gm";
 static const string OPTION_RESULT_FILENAME = "-f";
 static const string OPTION_SEED = "-seed";
 
-static const string OPTION_NUM_MUTATE = "-n";
-
 int main(int argc, char* argv[]) {
     CommandLineArgument args(argc, argv);
     GAConfiguration gaConfig;
@@ -52,7 +50,7 @@ int main(int argc, char* argv[]) {
 
     std::mt19937 random(gaConfig.seed());
 
-    unique_ptr<Initialize> initialize(new NeighborInitialize("w10h10d4r2_best.edges", args.getValue<int>(OPTION_NUM_MUTATE)));
+    unique_ptr<Initialize> initialize(new RandomInitialize());
 
     unique_ptr<CopySelects::CopySelect> copySelect(new CopySelects::RandomSelectWithoutReplacement(gaConfig.seed()));
 
