@@ -77,10 +77,14 @@ void GeneticAlgorithm::progressGeneration(
             if(numNextIndivs == nextGroup.population()) break;
         }
 	}
-
     *(this->_group) = std::move(nextGroup);
+    
     this->_group->tally();
     this->_generation++;
+
+    if(_bestEverGraph->betterThan(_group->bestIndiv())) {
+        *_bestEverGraph = _group->bestIndiv();
+    }
 }
 
 /// @brief 終了条件を満たしているか.

@@ -9,9 +9,10 @@ using namespace Cselab23Kimura::OdpGridGraphs::GA::Crossovers;
 using std::vector;
 using std::unique_ptr;
 
-BlockCrossoverWithDMSXf::BlockCrossoverWithDMSXf(unique_ptr<GenerateEmbeddMapUnits> &generateEmbeddMapUnits) :
-    _generateEmbeddMapUnits(generateEmbeddMapUnits){
-}
+BlockCrossoverWithDMSXf::BlockCrossoverWithDMSXf(unique_ptr<GenerateEmbeddMapUnits> &generateEmbeddMapUnits, double saveParentProbability) :
+    _generateEmbeddMapUnits(generateEmbeddMapUnits),
+    _saveParentProbability(saveParentProbability)
+{}
 
 /// @brief DMSXf形式でのブロック交叉
 /// @return 生成された子個体
@@ -58,6 +59,13 @@ Individual BlockCrossoverWithDMSXf::execute(const Individual& parentA, const Ind
 
         if(currentIndiv.betterThan(bestIndiv)) {
             bestIndiv = currentIndiv;
+        }
+    }
+
+    if(startParent->betterThan(bestIndiv)) {
+        long maxRand = static_cast<long>(random.max()) + 1;
+        if(random() < _saveParentProbability * maxRand) {
+            bestIndiv = *startParent;
         }
     }
 
