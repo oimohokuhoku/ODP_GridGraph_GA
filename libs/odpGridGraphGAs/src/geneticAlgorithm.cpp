@@ -82,7 +82,7 @@ void GeneticAlgorithm::progressGeneration(
     this->_group->tally();
     this->_generation++;
 
-    if(_bestEverGraph->betterThan(_group->bestIndiv())) {
+    if(!_bestEverGraph->betterThan(_group->bestIndiv())) {
         *_bestEverGraph = _group->bestIndiv();
     }
 }

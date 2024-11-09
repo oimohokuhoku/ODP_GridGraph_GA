@@ -6,12 +6,10 @@ set(PROJECT_VERSION 1.0.0)
 set(CMAKE_CXX_STANDARD 17)
 
 #Debug Mode↓
-set(CMAKE_CXX_FLAGS "-std=c++17 -O0 -g -Wall -Wextra -Wshadow -Wfloat-equal")
+#set(CMAKE_CXX_FLAGS "-std=c++17 -O0 -g -Wall -Wextra -Wshadow -Wfloat-equal")
  
 #Release Mode↓
-#set(CMAKE_CXX_FLAGS "-std=c++17 -O3 -mtune=native -march=native") 
-
-file(GLOB INCLUDE_DIRS )
+set(CMAKE_CXX_FLAGS "-std=c++17 -O3 -mtune=native -march=native") 
 
 add_subdirectory(./libs/odpGridGraphGAs/)
 add_subdirectory(./libs/commonLibraries/)
