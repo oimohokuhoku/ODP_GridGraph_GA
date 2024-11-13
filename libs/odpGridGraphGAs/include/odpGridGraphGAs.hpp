@@ -7,6 +7,7 @@
 #include "../src/group.hpp"
 
 #include "../src/copySelect/copySelect.hpp"
+#include "../src/copySelect/dmsxfSelect.hpp"
 #include "../src/copySelect/randomSelectWithoutReplacement.hpp"
 #include "../src/copySelect/rankingSelect.hpp"
 #include "../src/copySelect/rouletteSelect.hpp"
