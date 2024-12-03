@@ -52,7 +52,7 @@ void GeneticAlgorithm::progressGeneration(
     Group nextGroup(_group->population());
 
     int numParent = 2;
-    int numCrossover = 1;
+    int numCrossover = 10;
 
     int numNextIndivs = 0;
     copySelect->decideSequence(*_group);
@@ -66,7 +66,7 @@ void GeneticAlgorithm::progressGeneration(
         for(int i = 0; i < childs.population(); ++i) {
             childs.indivs[i] = crossover->execute(parents.indivs[0], parents.indivs[1], random);
             mutate->execute(childs.indivs[i], random);
-		    localSearch.localOptimize(childs.indivs[i]);
+		    //localSearch.localOptimize(childs.indivs[i]);
             fillEmptyPort(childs.indivs[i], random);
         }
 		

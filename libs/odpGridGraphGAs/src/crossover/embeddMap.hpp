@@ -1,4 +1,5 @@
 #pragma once
+#include <vector>
 
 namespace Cselab23Kimura::OdpGridGraphs::GA::Crossovers {
     class EmbeddMap {
@@ -15,6 +16,7 @@ namespace Cselab23Kimura::OdpGridGraphs::GA::Crossovers {
         void set(int index, bool value);
         void set(int rowIndex, int columnIndex, bool value);
         EmbeddMap overlay(const EmbeddMap& embeddMap) const;
+        std::vector<bool> borderNeighborMap(int neighborRange) const;
         void showMap() const;
 
         inline int numRow() const { return _numRow; }

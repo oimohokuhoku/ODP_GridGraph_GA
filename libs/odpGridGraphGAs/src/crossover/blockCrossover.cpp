@@ -26,6 +26,10 @@ Individual BlockCrossover::execute(const Individual& parentA, const Individual& 
 
     Individual child = parentA;
     child = embeddPartialGraph(parentA, parentB, embeddMap, random);
+
+    LocalSearch localSearch;
+    localSearch.partialGraphOptimize(child, embeddMap.borderNeighborMap(2));
+
     fillEmptyPort(child, random);
     return child;
 }

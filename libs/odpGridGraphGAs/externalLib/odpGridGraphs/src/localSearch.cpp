@@ -82,11 +82,10 @@ void LocalSearch::partialGraphOptimize(GridGraph& indiv, const vector<bool>& tar
 /// @return 改善があった場合はtrueを返す
 bool LocalSearch::partialExhaustiveTwoChange(GridGraph& indiv, const vector<bool>& targetNodes) {
     TwoChange twoChange;
-    PartialEvaluateBFS adjAspl;
     Grid grid(indiv);
     bool refine = false;
 
-    PartialFitness partialFitness = adjAspl(indiv, targetNodes);
+    indiv.evaluate();
 
     for(int nodeA0 = 0; nodeA0 < indiv.numNode(); ++nodeA0) {
         if(!targetNodes[nodeA0]) continue;
@@ -109,10 +108,9 @@ bool LocalSearch::partialExhaustiveTwoChange(GridGraph& indiv, const vector<bool
                     GridGraph newIndiv = indiv;
                     twoChange(newIndiv, nodeA0, nodeA1, nodeB0, nodeB1);
 
-                    PartialFitness newPartialFitness = adjAspl(newIndiv, targetNodes);
-                    _numEvaluate++;
+                    newIndiv.evaluate();
 
-                    if(newPartialFitness.betterThan(partialFitness)) {
+                    if(newIndiv.betterThan(indiv)) {
                         indiv = std::move(newIndiv);
                         refine = true;
                         exchanged = true;

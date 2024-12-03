@@ -1,6 +1,7 @@
 #include "embeddMap.hpp"
 #include <utility>
 #include <iostream>
+#include <vector>
 using namespace Cselab23Kimura::OdpGridGraphs::GA::Crossovers;
 
 EmbeddMap::EmbeddMap(int numRow, int numColumn) :
@@ -66,6 +67,52 @@ void EmbeddMap::set(int rowIndex, int columnIndex, bool value) {
     _mapData[toNodeIndex(rowIndex, columnIndex)] = value;
 }
 
+EmbeddMap EmbeddMap::overlay(const EmbeddMap& embeddMap) const {
+    EmbeddMap result(_numRow, _numColumn);
+    for(int i = 0; i < _numNode; ++i) {
+        result._mapData[i] = this->_mapData[i] | embeddMap._mapData[i];
+    }
+    return result;
+}
+
+std::vector<bool> EmbeddMap::borderNeighborMap(int neighborRange) const {
+    std::vector<bool> borderNeighbor(_numNode, false);
+
+    for(int r = 0; r < _numRow - neighborRange; ++r) {
+        for(int c = 0; c < _numColumn; ++c) {
+            if(this->at(r, c) != this->at(r + neighborRange, c)) {
+                borderNeighbor[toNodeIndex(r, c)] = true;
+            }
+        }
+    }
+
+    for(int r = neighborRange; r < _numRow; ++r) {
+        for(int c = 0; c < _numColumn; ++c) {
+            if(this->at(r, c) != this->at(r - neighborRange, c)) {
+                borderNeighbor[toNodeIndex(r, c)] = true;
+            }
+        }
+    }
+
+    for(int r = 0; r < _numRow; ++r) {
+        for(int c = 0; c < _numColumn - neighborRange; ++c) {
+            if(this->at(r, c) != this->at(r, c + neighborRange)) {
+                borderNeighbor[toNodeIndex(r, c)] = true;
+            }
+        }
+    }
+
+    for(int r = 0; r < _numRow; ++r) {
+        for(int c = neighborRange; c < _numColumn; ++c) {
+            if(this->at(r, c) != this->at(r, c - neighborRange)) {
+                borderNeighbor[toNodeIndex(r, c)] = true;
+            }
+        }
+    }
+
+    return borderNeighbor;
+}
+
 void EmbeddMap::showMap() const {
     for(int i = 0; i < _numRow; ++i) {
         for(int j = 0; j < _numColumn; ++j) {
@@ -74,14 +121,6 @@ void EmbeddMap::showMap() const {
         }
         std::cout << std::endl;
     }
-}
-
-EmbeddMap EmbeddMap::overlay(const EmbeddMap& embeddMap) const {
-    EmbeddMap result(_numRow, _numColumn);
-    for(int i = 0; i < _numNode; ++i) {
-        result._mapData[i] = this->_mapData[i] | embeddMap._mapData[i];
-    }
-    return result;
 }
 
 int EmbeddMap::toNodeIndex(int row, int column) const {

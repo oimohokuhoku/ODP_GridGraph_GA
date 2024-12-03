@@ -55,11 +55,58 @@ bool overlay_embedd_maps() {
     return unitTest.successAll();
 }
 
+bool obtain_border_neighbor_map() {
+    UnitTest unitTest("obtain_border_neighbor_map");
+
+    EmbeddMap map(5, 5);
+    for(int r = 0; r < 3; ++r) {
+        for(int c = 0; c < 2; ++c) {
+            map.set(r, c, true);
+        }
+    }
+
+    std::vector<bool> border = map.borderNeighborMap(1);
+    
+    unitTest.assertFalse("element(0, 0)", border[0]);
+    unitTest.assertTrue("element(0, 1)", border[1]);
+    unitTest.assertTrue ("element(0, 2)", border[2]);
+    unitTest.assertFalse("element(0, 3)", border[3]);
+    unitTest.assertFalse("element(0, 4)", border[4]);
+
+    unitTest.assertFalse("element(1, 0)", border[5]);
+    unitTest.assertTrue ("element(1, 1)", border[6]);
+    unitTest.assertTrue ("element(1, 2)", border[7]);
+    unitTest.assertFalse("element(1, 3)", border[8]);
+    unitTest.assertFalse("element(1, 4)", border[9]);
+
+    unitTest.assertTrue ("element(2, 0)", border[10]);
+    unitTest.assertTrue ("element(2, 1)", border[11]);
+    unitTest.assertTrue ("element(2, 2)", border[12]);
+    unitTest.assertFalse("element(2, 3)", border[13]);
+    unitTest.assertFalse("element(2, 4)", border[14]);
+
+    unitTest.assertTrue ("element(3, 0)", border[15]);
+    unitTest.assertTrue ("element(3, 1)", border[16]);
+    unitTest.assertFalse("element(3, 2)", border[17]);
+    unitTest.assertFalse("element(3, 3)", border[18]);
+    unitTest.assertFalse("element(3, 4)", border[19]);
+
+    unitTest.assertFalse("element(4, 0)", border[20]);
+    unitTest.assertFalse("element(4, 1)", border[21]);
+    unitTest.assertFalse("element(4, 2)", border[22]);
+    unitTest.assertFalse("element(4, 3)", border[23]);
+    unitTest.assertFalse("element(4, 4)", border[24]);
+
+    unitTest.showResult();
+    return unitTest.successAll();
+}
+
 
 int main(void) {
     bool success = true;
     success &= set_embedd_map_value();
     success &= overlay_embedd_maps();
+    success &= obtain_border_neighbor_map();
 
     if(success) return EXIT_SUCCESS;
     else        return EXIT_FAILURE;
