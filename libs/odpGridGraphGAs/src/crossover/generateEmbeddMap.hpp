@@ -5,17 +5,13 @@
 namespace Cselab23Kimura::OdpGridGraphs {
     class GridGraph;
 
-    namespace GA {
-        using Individual = Cselab23Kimura::OdpGridGraphs::GridGraph;
+    namespace GA::Crossovers {
+        class EmbeddMap;
 
-        namespace Crossovers {
-            using EmbeddMap = std::vector<bool>;
-
-            class GenerateEmbeddMapUnits {
-            public:
-                ~GenerateEmbeddMapUnits() = default;
-                virtual std::vector<EmbeddMap> execute(int numGraphRow, int numGraphColumn, std::mt19937& random) = 0;
-            };
-        }
+        class GenerateEmbeddMapUnits {
+        public:
+            ~GenerateEmbeddMapUnits() = default;
+            virtual std::vector<EmbeddMap> execute(int numGraphRow, int numGraphColumn, std::mt19937& random) = 0;
+        };
     }
 }

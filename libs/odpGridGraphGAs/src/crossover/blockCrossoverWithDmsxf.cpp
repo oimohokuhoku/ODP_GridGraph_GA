@@ -1,7 +1,10 @@
 #include "blockCrossoverWithDmsxf.hpp"
 
 #include <algorithm>
+#include <iostream>
+#include "embeddMap.hpp"
 #include "embeddPartialGraph.hpp"
+#include "./generateEmbeddMap.hpp"
 #include "odpGridGraphs.hpp"
 using namespace Cselab23Kimura::OdpGridGraphs;
 using namespace Cselab23Kimura::OdpGridGraphs::GA;
@@ -31,22 +34,22 @@ Individual BlockCrossoverWithDMSXf::execute(const Individual& parentA, const Ind
     EmbeddPartialGraph embeddPartialGraph;
     vector<EmbeddMap> embeddMapUnits = _generateEmbeddMapUnits->execute(parentA.numRow(), parentB.numColumn(), random);
     vector<bool> appliedUnit(embeddMapUnits.size(), false);
-    EmbeddMap currentEmbeddMap(startParent->numNode(), 0);
+    EmbeddMap currentEmbeddMap(startParent->numRow(), startParent->numColumn());
 
     Individual bestIndiv;
     Individual currentIndiv;
 
-    for(int step = 0; step < embeddMapUnits.size() - 1; ++step) {
+    for(size_t step = 0; step < embeddMapUnits.size() - 1; ++step) {
         Individual bestNextIndiv;
         int bestUnit = -1;
 
         for(int unitIndex = 0; unitIndex < embeddMapUnits.size(); ++unitIndex) {
             if(appliedUnit[unitIndex]) continue;
 
-            EmbeddMap nextEmbeddMap = overlapEmbeddMap(currentEmbeddMap, embeddMapUnits[unitIndex]);
+            EmbeddMap nextEmbeddMap = currentEmbeddMap.overlay(embeddMapUnits[unitIndex]);
             Individual nextIndiv    = embeddPartialGraph(*startParent, *endParent, nextEmbeddMap, random);
             nextIndiv.evaluate();
-
+            
             if(unitIndex == 0 || nextIndiv.betterThan(bestNextIndiv)) {
                 bestNextIndiv = std::move(nextIndiv);
                 bestUnit = unitIndex;
@@ -54,7 +57,7 @@ Individual BlockCrossoverWithDMSXf::execute(const Individual& parentA, const Ind
         }
         
         currentIndiv = std::move(bestNextIndiv);
-        currentEmbeddMap = overlapEmbeddMap(currentEmbeddMap, embeddMapUnits[bestUnit]);
+        currentEmbeddMap = currentEmbeddMap.overlay(embeddMapUnits[bestUnit]);
         appliedUnit[bestUnit] = true;
 
         if(currentIndiv.betterThan(bestIndiv)) {
@@ -72,17 +75,8 @@ Individual BlockCrossoverWithDMSXf::execute(const Individual& parentA, const Ind
     return bestIndiv;
 }
 
-/// @brief 埋め込みマップを重ねる
-EmbeddMap BlockCrossoverWithDMSXf::overlapEmbeddMap(const EmbeddMap& mapA, const EmbeddMap& mapB) {
-    EmbeddMap overlapedMap(mapA.size());
-    for(int i = 0; i < mapA.size(); ++i) {
-        overlapedMap[i] = mapA[i] | mapB[i];
-    }
-    return overlapedMap;
-}
-
 double BlockCrossoverWithDMSXf::calcBlendRatio(const EmbeddMap& bestMap) {
     int numNodeA = 0;
-    for(int i = 0; i < bestMap.size(); ++i) numNodeA += bestMap[i];
-    return (double)numNodeA / bestMap.size();
+    for(int i = 0; i < bestMap.numNode(); ++i) numNodeA += bestMap.at(i);
+    return (double)numNodeA / bestMap.numNode();
 }

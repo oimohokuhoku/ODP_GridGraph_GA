@@ -1,5 +1,4 @@
 #include "geneticAlgorithm.hpp"
-#include <iostream>
 #include <memory>
 #include <random>
 #include "odpGridGraphs.hpp"

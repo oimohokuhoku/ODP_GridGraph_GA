@@ -1,5 +1,6 @@
 #include "generateFlexibleBlockEmbeddMap.hpp"
 #include <algorithm>
+#include "embeddMap.hpp"
 using namespace Cselab23Kimura::OdpGridGraphs::GA::Crossovers;
 using std::vector;
 
@@ -15,14 +16,14 @@ vector<EmbeddMap> GenerateFlexibleBlockEmbeddMapUnits::execute(int numGraphRow, 
     int numSearchingNode = (numGraphRow - _minUnitHeight) * (numGraphColumn - _minUnitWidth);
     vector<EmbeddMap> embeddMapUnits; 
     vector<int> searchingNode(numSearchingNode);
-    EmbeddMap covered(numGraphNode, false);
+    EmbeddMap covered(numGraphRow, numGraphColumn);
     embeddMapUnits.reserve(numGraphNode);
 
     for(int i = 0; i < numGraphNode; ++i) searchingNode[i] = i;
     std::shuffle(searchingNode.begin(), searchingNode.end(), random);
     
     for(int startNode: searchingNode) {
-        if(covered[startNode]) continue;
+        if(covered.at(startNode)) continue;
 
         
     }

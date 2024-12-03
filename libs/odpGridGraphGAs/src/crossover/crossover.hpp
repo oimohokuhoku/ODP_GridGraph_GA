@@ -1,4 +1,5 @@
 #pragma once
+#include <random>
 
 namespace Cselab23Kimura::OdpGridGraphs {
     class GridGraph;

@@ -1,6 +1,6 @@
 #include "generateOrthogonalBlockEmbeddMap.hpp"
 #include <algorithm>
-
+#include "embeddMap.hpp"
 using namespace Cselab23Kimura::OdpGridGraphs::GA::Crossovers;
 using std::vector;
 
@@ -12,10 +12,10 @@ vector<EmbeddMap> GenerateOrthogonalBlockEmbeddMapUnits::execute(int numGraphRow
     int numUnitRow    = divisionRows.size()    - 1;
     int numUnitColumn = divisionColumns.size() - 1;
     int numUnit       = numUnitRow * numUnitColumn;
-    vector<EmbeddMap> embeddMapUnits(numUnit);
+    vector<EmbeddMap> embeddMapUnits(numUnit, EmbeddMap(numGraphRow, numGraphColumn));
 
     for(int unit = 0; unit < numUnit; ++unit) {
-        EmbeddMap map(numGraphNode, 0);
+        EmbeddMap map(numGraphRow, numGraphColumn);
 
         int unitRow    = unit / numUnitColumn;
         int unitColumn = unit % numUnitColumn;
@@ -26,8 +26,7 @@ vector<EmbeddMap> GenerateOrthogonalBlockEmbeddMapUnits::execute(int numGraphRow
 
         for(int r = top; r < bottom; ++r) {
             for(int c = left; c < right; ++c) {
-                int n = (r * numGraphColumn) + c;
-                map[n] = true;
+                map.set(r, c, true);
             }
         }
 

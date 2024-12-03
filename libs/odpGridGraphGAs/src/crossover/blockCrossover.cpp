@@ -2,6 +2,7 @@
 #include <vector>
 #include "odpGridGraphs.hpp"
 #include "embeddPartialGraph.hpp"
+#include "embeddMap.hpp"
 using namespace Cselab23Kimura::OdpGridGraphs;
 using namespace Cselab23Kimura::OdpGridGraphs::GA;
 using namespace Cselab23Kimura::OdpGridGraphs::GA::Crossovers;
@@ -17,20 +18,14 @@ Individual BlockCrossover::execute(const Individual& parentA, const Individual& 
     EmbeddPartialGraph embeddPartialGraph;
     FillEmptyPortRandomly fillEmptyPort;
     vector<EmbeddMap> embeddMapUnits = _generateEmbeddMapUnits->execute(parentA.numRow(), parentA.numColumn(), random);
-    EmbeddMap embeddMap(parentA.numNode(), false);
+    EmbeddMap embeddMap(parentA.numRow(), parentA.numColumn());
 
     for(EmbeddMap map: embeddMapUnits) {
-        if(random() % 2 == 0) overlayEmbeddMaps(embeddMap, map);
+        if(random() % 2 == 0) embeddMap = embeddMap.overlay(map);
     }
 
     Individual child = parentA;
     child = embeddPartialGraph(parentA, parentB, embeddMap, random);
     fillEmptyPort(child, random);
     return child;
-}
-
-void BlockCrossover::overlayEmbeddMaps(EmbeddMap &baseMap, const EmbeddMap &overlayMap) {
-    for(int i = 0; i < baseMap.size(); ++i) {
-        baseMap[i] = baseMap[i] | overlayMap[i];
-    }
 }

@@ -1,12 +1,15 @@
 #pragma once
 
+#include <random>
 #include <vector>
 #include <memory>
-#include "generateEmbeddMap.hpp"
 #include "crossover.hpp"
 
 namespace Cselab23Kimura::OdpGridGraphs::GA::Crossovers
 {
+    class GenerateEmbeddMapUnits;
+    class EmbeddMap;
+
     class BlockCrossoverWithDMSXf: public Crossover {
     public:
         BlockCrossoverWithDMSXf(std::unique_ptr<GenerateEmbeddMapUnits> &generateEmbeddMapUnits, double saveParentProbability);
@@ -15,7 +18,6 @@ namespace Cselab23Kimura::OdpGridGraphs::GA::Crossovers
     private:
         const double _saveParentProbability;
         std::unique_ptr<GenerateEmbeddMapUnits>& _generateEmbeddMapUnits;
-        EmbeddMap overlapEmbeddMap(const EmbeddMap &mapA, const EmbeddMap &mapB);
         double calcBlendRatio(const EmbeddMap &bestMap);
     };
 }

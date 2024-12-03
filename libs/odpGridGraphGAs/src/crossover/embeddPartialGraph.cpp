@@ -3,14 +3,15 @@
 #include <vector>
 #include <algorithm>
 #include "odpGridGraphs.hpp"
+#include "embeddMap.hpp"
 using namespace Cselab23Kimura::OdpGridGraphs;
 using namespace Cselab23Kimura::OdpGridGraphs::GA;
 using namespace Cselab23Kimura::OdpGridGraphs::GA::Crossovers;
 
 /// @brief indiv0にindiv1の部分グラフを埋め込む.
 /// @param embeddMap インデックスが頂点の一次元表記に対応する配列.
-Individual EmbeddPartialGraph::operator() (const Individual& indiv0, const Individual& indiv1, const EmbeddMap& embeddMap, std::mt19937& random) {
-    Individual newIndiv;
+GridGraph EmbeddPartialGraph::operator() (const GridGraph& indiv0, const GridGraph& indiv1, const EmbeddMap& embeddMap, std::mt19937& random) {
+    GridGraph newIndiv;
     newIndiv.clear();
 
     inheritEdgesWithEmbeddMap(newIndiv, indiv0, indiv1, embeddMap);
@@ -20,10 +21,10 @@ Individual EmbeddPartialGraph::operator() (const Individual& indiv0, const Indiv
     return newIndiv;
 }
 
-void EmbeddPartialGraph::inheritEdgesWithEmbeddMap(Individual& newIndiv, const Individual& indiv0, const Individual& indiv1, const EmbeddMap& embeddMap) {
+void EmbeddPartialGraph::inheritEdgesWithEmbeddMap(GridGraph& newIndiv, const GridGraph& indiv0, const GridGraph& indiv1, const EmbeddMap& embeddMap) {
     for(int node = 0; node < newIndiv.numNode(); ++node) {
-        const Individual* srcIndiv;
-        if(embeddMap[node]) srcIndiv = &indiv0;
+        const GridGraph* srcIndiv;
+        if(embeddMap.at(node)) srcIndiv = &indiv0;
         else                srcIndiv = &indiv1;
 
         for(int d = 0; d < srcIndiv->nodeDegrees[node]; ++d) {
@@ -31,14 +32,14 @@ void EmbeddPartialGraph::inheritEdgesWithEmbeddMap(Individual& newIndiv, const I
 
             if(node == adjNode) continue;
             if(newIndiv.haveEdge(node, adjNode))      continue;
-            if(embeddMap[node] != embeddMap[adjNode]) continue;
+            if(embeddMap.at(node) != embeddMap.at(adjNode)) continue;
 
             newIndiv.addEdge(node, adjNode);
         }
     }
 }
 
-void EmbeddPartialGraph::inheritShareEdges(Individual& newIndiv, const Individual& indivA, const Individual& indivB) {
+void EmbeddPartialGraph::inheritShareEdges(GridGraph& newIndiv, const GridGraph& indivA, const GridGraph& indivB) {
     for(int nodeA0 = 0; nodeA0 < indivA.numNode(); ++nodeA0) {
         for(int d = 0; d < indivA.nodeDegrees[nodeA0]; ++d) {
             int nodeA1 = indivA.adjacent[nodeA0][d];
@@ -50,7 +51,7 @@ void EmbeddPartialGraph::inheritShareEdges(Individual& newIndiv, const Individua
     }
 }
 
-void EmbeddPartialGraph::inheritRandomEdges(Individual& newIndiv, const Individual& indiv0, const Individual& indiv1, std::mt19937& random) {
+void EmbeddPartialGraph::inheritRandomEdges(GridGraph& newIndiv, const GridGraph& indiv0, const GridGraph& indiv1, std::mt19937& random) {
     std::vector<int> nodeSequence(newIndiv.numNode());
     for(int i = 0; i < nodeSequence.size(); ++i) nodeSequence[i] = i;
     std::shuffle(nodeSequence.begin(), nodeSequence.end(), random);
@@ -59,7 +60,7 @@ void EmbeddPartialGraph::inheritRandomEdges(Individual& newIndiv, const Individu
         int node = nodeSequence[i];
         if(newIndiv.fullDegree(node)) continue;
 
-        const Individual* srcIndiv;
+        const GridGraph* srcIndiv;
         if(random() % 100 < 50) srcIndiv = &indiv0;
         else                    srcIndiv = &indiv1;
 

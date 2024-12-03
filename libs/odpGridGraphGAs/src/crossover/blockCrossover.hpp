@@ -7,6 +7,8 @@
 
 namespace Cselab23Kimura::OdpGridGraphs::GA::Crossovers
 {
+    class EmbeddMap;
+
     class BlockCrossover: public Crossover {
     public:
         BlockCrossover(std::unique_ptr<GenerateEmbeddMapUnits> &generateEmbeddMapUnits);
@@ -14,6 +16,5 @@ namespace Cselab23Kimura::OdpGridGraphs::GA::Crossovers
         Individual execute(const Individual& parentA, const Individual& parentB, std::mt19937& random) override;
     private:
         std::unique_ptr<GenerateEmbeddMapUnits>& _generateEmbeddMapUnits;
-        void overlayEmbeddMaps(EmbeddMap &baseMap, const EmbeddMap &overlayMap);
     };
 }

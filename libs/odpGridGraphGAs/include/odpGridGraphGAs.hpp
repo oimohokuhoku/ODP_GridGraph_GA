@@ -16,6 +16,7 @@
 #include "../src/crossover/blockCrossover.hpp"
 #include "../src/crossover/blockCrossoverWithDmsxf.hpp"
 #include "../src/crossover/crossover.hpp"
+#include "../src/crossover/embeddMap.hpp"
 #include "../src/crossover/embeddPartialGraph.hpp" 
 #include "../src/crossover/generateEmbeddMap.hpp"
 #include "../src/crossover/generateFlexibleBlockEmbeddMap.hpp"
