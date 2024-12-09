@@ -10,11 +10,11 @@ using namespace Cselab23Kimura::OdpGridGraphs::GA::Crossovers;
 using std::unique_ptr;
 using std::vector;
 
-BlockCrossover::BlockCrossover(unique_ptr<GenerateEmbeddMapUnits> &generateEmbeddMapUnits) :
+BlockCrossover::BlockCrossover(GenerateEmbeddMapUnits *const generateEmbeddMapUnits) :
     _generateEmbeddMapUnits(generateEmbeddMapUnits)
 {}
 
-Individual BlockCrossover::execute(const Individual& parentA, const Individual& parentB, std::mt19937& random) {
+GridGraph BlockCrossover::execute(const GridGraph& parentA, const GridGraph& parentB, std::mt19937& random) {
     EmbeddPartialGraph embeddPartialGraph;
     FillEmptyPortRandomly fillEmptyPort;
     vector<EmbeddMap> embeddMapUnits = _generateEmbeddMapUnits->execute(parentA.numRow(), parentA.numColumn(), random);
@@ -24,7 +24,7 @@ Individual BlockCrossover::execute(const Individual& parentA, const Individual& 
         if(random() % 2 == 0) embeddMap = embeddMap.overlay(map);
     }
 
-    Individual child = parentA;
+    GridGraph child = parentA;
     child = embeddPartialGraph(parentA, parentB, embeddMap, random);
 
     LocalSearch localSearch;

@@ -11,6 +11,7 @@ set(CMAKE_CXX_STANDARD 17)
 #Release Mode↓
 set(CMAKE_CXX_FLAGS "-std=c++17 -O3 -mtune=native -march=native") 
 
+add_subdirectory(./libs/odpGridGraphs/)
 add_subdirectory(./libs/odpGridGraphGAs/)
 add_subdirectory(./libs/commonLibraries/)
 

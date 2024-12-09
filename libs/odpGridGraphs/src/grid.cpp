@@ -1,5 +1,4 @@
 #include "grid.hpp"
-
 #include <cmath>
 #include <vector>
 #include "gridGraph.hpp"

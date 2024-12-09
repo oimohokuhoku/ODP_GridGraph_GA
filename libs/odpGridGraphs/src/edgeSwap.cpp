@@ -1,5 +1,4 @@
 #include "edgeSwap.hpp"
-
 #include <iostream>
 #include <vector>
 #include <random>

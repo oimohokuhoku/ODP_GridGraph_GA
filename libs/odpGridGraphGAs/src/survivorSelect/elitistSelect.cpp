@@ -1,4 +1,5 @@
 #include "elitistSelect.hpp"
+#include "odpGridGraphs.hpp"
 #include "../group.hpp"
 using namespace Cselab23Kimura::OdpGridGraphs;
 using namespace Cselab23Kimura::OdpGridGraphs::GA;
@@ -9,29 +10,29 @@ Group ElitistSelect::moveSurvivors(Group& childs, Group& parents, std::mt19937& 
     constexpr int PARENTS_GROUP = 1;
     int selectedGroup = CHILDS_GROUP;
     int selectedIndex = 0;
-    Individual& elitist = childs.indivs[0];
+    GridGraph& elitist = childs[0];
 
     for(int i = 1; i < childs.population(); ++i) {
-        if(childs.indivs[i].betterThan(elitist)) {
+        if(childs[i].betterThan(elitist)) {
             selectedGroup = CHILDS_GROUP;
             selectedIndex = i;
-            elitist = childs.indivs[i];
+            elitist = childs[i];
         }
     }
     for(int i = 0; i < parents.population(); ++i) {
-        if(parents.indivs[i].betterThan(elitist)) {
+        if(parents[i].betterThan(elitist)) {
             selectedGroup = PARENTS_GROUP;
             selectedIndex = i;
-            elitist = parents.indivs[i];
+            elitist = parents[i];
         }
     }
 
     Group result(1);
     if(selectedGroup == CHILDS_GROUP) {
-        result.indivs[0] = std::move(childs.indivs[selectedIndex]);
+        result[0] = std::move(childs[selectedIndex]);
     }
     else {
-        result.indivs[0] = std::move(parents.indivs[selectedIndex]);
+        result[0] = std::move(parents[selectedIndex]);
     }
 
     return result;

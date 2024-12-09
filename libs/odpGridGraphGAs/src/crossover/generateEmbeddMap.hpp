@@ -10,7 +10,7 @@ namespace Cselab23Kimura::OdpGridGraphs {
 
         class GenerateEmbeddMapUnits {
         public:
-            ~GenerateEmbeddMapUnits() = default;
+            virtual ~GenerateEmbeddMapUnits() = default;
             virtual std::vector<EmbeddMap> execute(int numGraphRow, int numGraphColumn, std::mt19937& random) = 0;
         };
     }

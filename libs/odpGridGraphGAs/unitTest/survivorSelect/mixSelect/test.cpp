@@ -1,4 +1,5 @@
 #include "odpGridGraphGAs.hpp"
+#include "odpGridGraphs.hpp"
 #include "../../unitTest.hpp"
 #include <random>
 #include <vector>
@@ -28,10 +29,10 @@ public:
         Group result(numPickUp);
         
         for(size_t i = 0; i < _pickUpChildIndexes.size(); ++i) {
-            result.indivs[index++] = std::move(childs.indivs[_pickUpChildIndexes[i]]);
+            result[index++] = std::move(childs[_pickUpChildIndexes[i]]);
         }
         for(size_t i = 0; i < _pickUpParentIndexes.size(); ++i) {
-            result.indivs[index++] = std::move(parents.indivs[_pickUpParentIndexes[i]]);
+            result[index++] = std::move(parents[_pickUpParentIndexes[i]]);
         }
 
         return std::move(result);
@@ -52,22 +53,22 @@ bool selected_individuals() {
     
     UnitTest unitTest("select elitist individual");
 
-    vector<unique_ptr<SurvivorSelects::SurvivorSelect>> selects;
-    selects.push_back(std::move(unique_ptr<SurvivorSelects::SurvivorSelect>(new SurvivorSelectMock(vector<int>{0, 1}, vector<int>{0}))));
-    selects.push_back(std::move(unique_ptr<SurvivorSelects::SurvivorSelect>(new SurvivorSelectMock(vector<int>{2},    vector<int>{1, 2}))));
+    vector<SurvivorSelects::SurvivorSelect*> selects;
+    selects.push_back(new SurvivorSelectMock(vector<int>{0, 1}, vector<int>{0}));
+    selects.push_back(new SurvivorSelectMock(vector<int>{2},    vector<int>{1, 2}));
     SurvivorSelects::MixSelect select(selects);
 
     Group survivor = select.moveSurvivors(childs, parents, mt);
 
     unitTest.assertEqualInt("group size is correct" ,survivor.population(), 6);
 
-    unitTest.assertTrue("moved1", survivor.indivs[0].matchGraph(childSrc.indivs[0]));
-    unitTest.assertTrue("moved2", survivor.indivs[1].matchGraph(childSrc.indivs[1]));
-    unitTest.assertTrue("moved3", survivor.indivs[2].matchGraph(parentSrc.indivs[0]));
+    unitTest.assertTrue("moved1", survivor[0].matchGraph(childSrc[0]));
+    unitTest.assertTrue("moved2", survivor[1].matchGraph(childSrc[1]));
+    unitTest.assertTrue("moved3", survivor[2].matchGraph(parentSrc[0]));
 
-    unitTest.assertTrue("moved4", survivor.indivs[3].matchGraph(childSrc.indivs[2]));
-    unitTest.assertTrue("moved5", survivor.indivs[4].matchGraph(parentSrc.indivs[1]));
-    unitTest.assertTrue("moved6", survivor.indivs[5].matchGraph(parentSrc.indivs[2]));
+    unitTest.assertTrue("moved4", survivor[3].matchGraph(childSrc[2]));
+    unitTest.assertTrue("moved5", survivor[4].matchGraph(parentSrc[1]));
+    unitTest.assertTrue("moved6", survivor[5].matchGraph(parentSrc[2]));
 
     unitTest.showResult();
     return unitTest.successAll();

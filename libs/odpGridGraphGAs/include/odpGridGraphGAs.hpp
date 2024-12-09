@@ -1,5 +1,3 @@
-#include "../externalLib/odpGridGraphs/include/odpGridGraphs.hpp"
-
 #include "../src/gaConfiguration.hpp"
 #include "../src/gaCsvRecorder.hpp"
 #include "../src/gaParameterTable.hpp"

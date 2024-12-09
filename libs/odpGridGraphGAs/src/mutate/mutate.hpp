@@ -6,13 +6,13 @@ namespace Cselab23Kimura::OdpGridGraphs {
     class GridGraph;
     
     namespace GA {
-        using Individual = Cselab23Kimura::OdpGridGraphs::GridGraph;
+        using GridGraph = Cselab23Kimura::OdpGridGraphs::GridGraph;
 
         namespace Mutates {
             class Mutate {
             public:
                 virtual ~Mutate() = default;
-                virtual void execute(Individual& indiv, std::mt19937& random) = 0;
+                virtual void execute(GridGraph& indiv, std::mt19937& random) = 0;
             };
         }
     }

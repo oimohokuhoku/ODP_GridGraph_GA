@@ -1,5 +1,4 @@
 #pragma once
-
 #include <climits>
 #include <cfloat>
 

@@ -1,4 +1,5 @@
 #include "odpGridGraphGAs.hpp"
+#include "odpGridGraphs.hpp"
 #include "../../unitTest.hpp"
 #include <random>
 #include <vector>
@@ -30,10 +31,10 @@ bool select_elitist_individual() {
 
     int movedCount = 0;
     for(int i = 0; i < parents.population(); ++i) {
-        if(parents.indivs[i].adjacent == nullptr) movedCount++;
+        if(parents[i].adjacent == nullptr) movedCount++;
     }
     for(int i = 0; i < childs.population(); ++i) {
-        if(childs.indivs[i].adjacent == nullptr) movedCount++;
+        if(childs[i].adjacent == nullptr) movedCount++;
     }
     unitTest.assertEqualInt("count of moved individual is 1", movedCount, 1);
 
@@ -45,7 +46,7 @@ bool maybe_selected_according_to_ranking() {
     std::mt19937 mt(42);
 
     constexpr int numIndiv = 5;
-    Individual indivs[numIndiv];
+    GridGraph indivs[numIndiv];
     indivs[0] = EdgesFileReader::read(EdgesFile1);
     indivs[1] = EdgesFileReader::read(EdgesFile2);
     indivs[2] = EdgesFileReader::read(EdgesFile3);
@@ -59,15 +60,15 @@ bool maybe_selected_according_to_ranking() {
     SurvivorSelects::RankingSelect select;
     vector<int> selectedCount(5, 0);
     for(int n = 0; n < 1000; ++n) {
-        parents.indivs[0] = indivs[0];
-        parents.indivs[1] = indivs[1];
-        parents.indivs[2] = indivs[2];
-        childs.indivs[0]  = indivs[3];
-        childs.indivs[1]  = indivs[4];
+        parents[0] = indivs[0];
+        parents[1] = indivs[1];
+        parents[2] = indivs[2];
+        childs[0]  = indivs[3];
+        childs[1]  = indivs[4];
 
         Group survivor = select.moveSurvivors(childs, parents, mt);
         for(int i = 0; i < numIndiv; ++i) {
-            if(survivor.indivs[0].matchGraph(indivs[i])) {
+            if(survivor[0].matchGraph(indivs[i])) {
                 selectedCount[i]++;
                 break;
             }
@@ -86,7 +87,7 @@ bool select_from_group_including_null() {
     std::mt19937 mt(42);
 
     constexpr int numIndiv = 5;
-    Individual indivs[numIndiv];
+    GridGraph indivs[numIndiv];
     indivs[0] = EdgesFileReader::read(EdgesFile1);
     indivs[1] = EdgesFileReader::read(EdgesFile2);
     indivs[2] = EdgesFileReader::read(EdgesFile3);
@@ -102,19 +103,19 @@ bool select_from_group_including_null() {
     vector<int> selectedCount(5, 0);
     bool selectNull = false;
     for(int n = 0; n < 1000; ++n) {
-        parents.indivs[0] = indivs[0];
-        parents.indivs[1] = indivs[1];
-        parents.indivs[2] = indivs[2];
-        childs.indivs[0]  = indivs[3];
-        childs.indivs[1]  = indivs[4];
+        parents[0] = indivs[0];
+        parents[1] = indivs[1];
+        parents[2] = indivs[2];
+        childs[0]  = indivs[3];
+        childs[1]  = indivs[4];
 
         //generate empty object
-        Individual dummy;
-        dummy = std::move(parents.indivs[0]);
-        dummy = std::move(childs.indivs[0]);
+        GridGraph dummy;
+        dummy = std::move(parents[0]);
+        dummy = std::move(childs[0]);
 
         Group survivor = select.moveSurvivors(childs, parents, mt);
-        if(survivor.indivs[0].adjacent == nullptr) {
+        if(survivor[0].adjacent == nullptr) {
             selectNull = true;
             break;
         }

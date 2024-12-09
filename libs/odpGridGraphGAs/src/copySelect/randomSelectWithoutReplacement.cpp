@@ -1,5 +1,4 @@
 #include "randomSelectWithoutReplacement.hpp"
-
 #include <vector>
 #include <algorithm>
 #include <iostream>
@@ -12,8 +11,7 @@ RandomSelectWithoutReplacement::RandomSelectWithoutReplacement(int seed) :
     _random(std::mt19937(seed)),
     _sequence(vector<int>(0)),
     _index(-1)
-{
-}
+{}
 
 void RandomSelectWithoutReplacement::decideSequence(const Group& group) {
     if(_sequence.size() != group.population()) {

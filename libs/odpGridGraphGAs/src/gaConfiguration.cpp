@@ -41,10 +41,6 @@ void GAConfiguration::setGeneMutateProbability(double geneMutateProbability) {
     _geneMutateProbability = geneMutateProbability; 
 }
 
-void GAConfiguration::setGenerationChangeModel(const std::string &generationChangeModel) { 
-    _generationChangeModel = generationChangeModel; 
-}
-
 void GAConfiguration::setSeed(int seed) { 
     _seed = seed; 
 }
@@ -57,7 +53,6 @@ string GAConfiguration::toDirectoryNameString() const{
     str += "l" + to_string(_graphMaxLength) + "_";
     str += "p" + to_string(_population) + "_";
     str += "g" + to_string(_maxGeneration) + "_";
-    str += _generationChangeModel + "_";
     str += "im" + to_string(_indivMutateProbability) + "_";
     str += "gm" + to_string(_geneMutateProbability) + "_";
     str += "seed" + to_string(_seed);
@@ -72,7 +67,6 @@ void GAConfiguration::showConfigList() const {
     cout << "[GA Configuration]" << endl;
     cout << "- Population : " << _population << endl;
     cout << "- Max generation : " << _maxGeneration << endl;
-    cout << "- Generation change model : " << _generationChangeModel << endl;
     cout << "- Mutation probability : (individual)" << _indivMutateProbability << ", (gene)" << _geneMutateProbability << endl;
     cout << "[Other]" << endl;
     cout << "- Seed : " << _seed << endl;

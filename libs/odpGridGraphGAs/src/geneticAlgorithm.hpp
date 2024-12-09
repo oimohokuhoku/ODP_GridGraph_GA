@@ -22,16 +22,16 @@ namespace Cselab23Kimura::OdpGridGraphs::GA
     public:
         GeneticAlgorithm(
             const GAConfiguration &config, 
-            std::unique_ptr<Initialize>& initialize,
+            Initialize *const initialize,
             std::mt19937& random
         );
         ~GeneticAlgorithm();
 
         void progressGeneration(
-            std::unique_ptr<CopySelects::CopySelect> &copySelect,
-            std::unique_ptr<Crossovers::Crossover>& crossover,
-            std::unique_ptr<Mutates::Mutate>& mutate,
-            std::unique_ptr<SurvivorSelects::SurvivorSelect> &survivorSelect,
+            CopySelects::CopySelect *const copySelect,
+            Crossovers::Crossover *const crossover,
+            Mutates::Mutate *const mutate,
+            SurvivorSelects::SurvivorSelect *const survivorSelect,
             std::mt19937& random
         );
         bool end() const;

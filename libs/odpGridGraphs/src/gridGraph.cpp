@@ -1,5 +1,4 @@
 #include "gridGraph.hpp"
-
 #include <iostream>
 #include <climits>
 #include <utility>

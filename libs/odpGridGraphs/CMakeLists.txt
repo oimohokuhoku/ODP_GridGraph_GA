@@ -9,4 +9,6 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 file(GLOB SRC_FILES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 add_library(${PROJECT_NAME} STATIC ${SRC_FILES})
-target_include_directories(${PROJECT_NAME} PRIVATE "externalLib/")
+target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/externalLib/")
+
+target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")

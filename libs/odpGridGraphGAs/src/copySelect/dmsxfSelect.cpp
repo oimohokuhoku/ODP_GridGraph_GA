@@ -1,5 +1,4 @@
 #include "dmsxfSelect.hpp"
-
 #include <algorithm>
 #include "odpGridGraphs.hpp"
 #include "../group.hpp"

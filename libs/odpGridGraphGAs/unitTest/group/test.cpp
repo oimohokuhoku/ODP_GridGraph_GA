@@ -1,4 +1,5 @@
 #include "odpGridGraphGAs.hpp"
+#include "odpGridGraphs.hpp"
 #include "../unitTest.hpp"
 using namespace Cselab23Kimura;
 using namespace Cselab23Kimura::OdpGridGraphs;
@@ -15,12 +16,12 @@ bool substitute_for_same_population_group() {
     int population = 2;
 
     Group groupA(population);
-    groupA.indivs[0] = EdgesFileReader::read(EdgesFile1);
-    groupA.indivs[1] = EdgesFileReader::read(EdgesFile2);
+    groupA[0] = EdgesFileReader::read(EdgesFile1);
+    groupA[1] = EdgesFileReader::read(EdgesFile2);
 
     Group groupB(population);
-    groupB.indivs[0] = EdgesFileReader::read(EdgesFile3);
-    groupB.indivs[1] = EdgesFileReader::read(EdgesFile4);
+    groupB[0] = EdgesFileReader::read(EdgesFile3);
+    groupB[1] = EdgesFileReader::read(EdgesFile4);
 
     UnitTest unitTest("substitute_for_same_population_group");
     groupB = groupA;
@@ -28,7 +29,7 @@ bool substitute_for_same_population_group() {
     for(int i = 0; i < population; ++i) {
         unitTest.assertTrue(
             "individual match",
-            groupA.indivs[i].matchGraph(groupB.indivs[i])
+            groupA[i].matchGraph(groupB[i])
         );
     }
     unitTest.showResult();
@@ -38,13 +39,13 @@ bool substitute_for_same_population_group() {
 
 bool substitute_for_different_population_group() {
     Group groupA(3);
-    groupA.indivs[0] = EdgesFileReader::read(EdgesFile1);
-    groupA.indivs[1] = EdgesFileReader::read(EdgesFile2);
-    groupA.indivs[2] = EdgesFileReader::read(EdgesFile5);
+    groupA[0] = EdgesFileReader::read(EdgesFile1);
+    groupA[1] = EdgesFileReader::read(EdgesFile2);
+    groupA[2] = EdgesFileReader::read(EdgesFile5);
 
     Group groupB(2);
-    groupB.indivs[0] = EdgesFileReader::read(EdgesFile3);
-    groupB.indivs[1] = EdgesFileReader::read(EdgesFile4);
+    groupB[0] = EdgesFileReader::read(EdgesFile3);
+    groupB[1] = EdgesFileReader::read(EdgesFile4);
     
     UnitTest unitTest("substitute_for_different_population_group");
     groupB = groupA;
@@ -52,7 +53,7 @@ bool substitute_for_different_population_group() {
     for(int i = 0; i < groupA.population(); ++i) {
         unitTest.assertTrue(
             "individual match",
-            groupA.indivs[i].matchGraph(groupB.indivs[i])
+            groupA[i].matchGraph(groupB[i])
         );
     }
     unitTest.showResult();
@@ -62,11 +63,11 @@ bool substitute_for_different_population_group() {
 
 bool select_without_replacement() {
     Group group(5);
-    group.indivs[0] = EdgesFileReader::read(EdgesFile1);
-    group.indivs[1] = EdgesFileReader::read(EdgesFile2);
-    group.indivs[2] = EdgesFileReader::read(EdgesFile3);
-    group.indivs[3] = EdgesFileReader::read(EdgesFile4);
-    group.indivs[4] = EdgesFileReader::read(EdgesFile5);
+    group[0] = EdgesFileReader::read(EdgesFile1);
+    group[1] = EdgesFileReader::read(EdgesFile2);
+    group[2] = EdgesFileReader::read(EdgesFile3);
+    group[3] = EdgesFileReader::read(EdgesFile4);
+    group[4] = EdgesFileReader::read(EdgesFile5);
 
     UnitTest unitTest("tally_fitness");
     group.tally();

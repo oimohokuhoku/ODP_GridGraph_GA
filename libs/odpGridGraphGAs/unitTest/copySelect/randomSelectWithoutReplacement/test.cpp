@@ -1,4 +1,5 @@
 #include "odpGridGraphGAs.hpp"
+#include "odpGridGraphs.hpp"
 #include "../../unitTest.hpp"
 #include <random>
 #include <vector>

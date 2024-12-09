@@ -1,11 +1,11 @@
 #include "mixSelect.hpp"
+#include "odpGridGraphs.hpp"
 #include "../group.hpp"
 using namespace Cselab23Kimura::OdpGridGraphs::GA;
 using namespace Cselab23Kimura::OdpGridGraphs::GA::SurvivorSelects;
 using std::vector;
-using std::unique_ptr;
 
-MixSelect::MixSelect(vector<unique_ptr<SurvivorSelect>> &selects) :
+MixSelect::MixSelect(vector<SurvivorSelect*> &selects) :
     _selects(selects)
 {}
 
@@ -25,11 +25,11 @@ Group MixSelect::mergeGroup(std::vector<Group>& groups) {
         totalSurvivors += group.population();
     }
 
-    Group result(totalSurvivors);
+    Group result(totalSurvivors); 
     int index = 0;
     for(auto& group: groups) {
         for(int i = 0; i < group.population(); ++i) 
-            result.indivs[index++] = std::move(group.indivs[i]);
+            result[index++] = std::move(group[i]);
     }
 
     return std::move(result);

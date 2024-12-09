@@ -1,5 +1,4 @@
 #pragma once
-
 #include <vector>
 #include <memory>
 #include "generateEmbeddMap.hpp"
@@ -11,10 +10,10 @@ namespace Cselab23Kimura::OdpGridGraphs::GA::Crossovers
 
     class BlockCrossover: public Crossover {
     public:
-        BlockCrossover(std::unique_ptr<GenerateEmbeddMapUnits> &generateEmbeddMapUnits);
+        BlockCrossover(GenerateEmbeddMapUnits *const generateEmbeddMapUnits);
         ~BlockCrossover() = default;
-        Individual execute(const Individual& parentA, const Individual& parentB, std::mt19937& random) override;
+        GridGraph execute(const GridGraph& parentA, const GridGraph& parentB, std::mt19937& random) override;
     private:
-        std::unique_ptr<GenerateEmbeddMapUnits>& _generateEmbeddMapUnits;
+        GenerateEmbeddMapUnits *const _generateEmbeddMapUnits;
     };
 }

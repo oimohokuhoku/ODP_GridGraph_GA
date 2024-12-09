@@ -1,5 +1,4 @@
 #include "stairsSelect.hpp"
-
 #include <algorithm>
 #include "odpGridGraphs.hpp"
 #include "../group.hpp"
@@ -22,9 +21,9 @@ void StairsSelect::decideSequence(const Group& group) {
     //FIXME: バブルソート使ってるけど、もっといいアルゴリズムに変えたい.
     for(int end = _population; end > 0; --end) {
 		for(int i = 0; i + 1 < end; ++i) {
-			GridGraph* before = &(group.indivs[ranking[i]]);
-			GridGraph* after  = &(group.indivs[ranking[i + 1]]);
-			if((*before).betterThan(*after)) {
+			const GridGraph& before = group[ranking[i]];
+			const GridGraph& after  = group[ranking[i + 1]];
+			if(before.betterThan(after)) {
 				int temp = ranking[i];
 				ranking[i] = ranking[i + 1];
 				ranking[i + 1] = temp;

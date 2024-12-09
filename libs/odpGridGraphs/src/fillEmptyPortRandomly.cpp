@@ -1,5 +1,4 @@
 #include "fillEmptyPortRandomly.hpp"
-
 #include <vector>
 #include <algorithm>
 #include "gridGraph.hpp"

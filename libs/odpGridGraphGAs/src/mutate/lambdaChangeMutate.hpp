@@ -7,7 +7,7 @@ namespace Cselab23Kimura::OdpGridGraphs::GA::Mutates {
     public:
         LambdaChangeMutate(double indivMutateProbability, double geneMutateProbability);
         ~LambdaChangeMutate() = default;
-        void execute(Individual& indiv, std::mt19937& random);
+        void execute(GridGraph& indiv, std::mt19937& random);
 
     private:
         const double _indivMutateProbability;

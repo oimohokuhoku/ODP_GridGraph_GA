@@ -1,5 +1,4 @@
 #include "group.hpp"
-
 #include <iostream>
 #include <cstdlib>
 #include <climits>
@@ -9,7 +8,7 @@ using namespace Cselab23Kimura::OdpGridGraphs::GA;
 
 /* public */
 Group::Group(int size): _population(size) {
-	indivs = new Individual[_population];
+	_indivs = new GridGraph[_population];
 	_bestIndivIndex = -1;
 	_bestDiameter = INF_DIAMETER;
 	_bestAspl     = INF_ASPL;
@@ -19,7 +18,7 @@ Group::Group(int size): _population(size) {
 }
 
 Group::Group(const Group& obj): _population(obj._population) {
-	indivs = new Individual[_population];
+	_indivs = new GridGraph[_population];
 	*this = obj;
 }
 
@@ -28,19 +27,19 @@ Group::Group(Group&& obj): _population(obj._population) {
 }
 
 Group::~Group() {
-	if(indivs != nullptr) delete[] indivs;
+	if(_indivs != nullptr) delete[] _indivs;
 }
 
 Group& Group::operator=(const Group& obj) {
 	if(this->_population != obj._population) {
 		this->_population = obj._population;
 
-		delete[] this->indivs;
-		this->indivs = new Individual[obj._population];
+		delete[] this->_indivs;
+		this->_indivs = new GridGraph[obj._population];
 	}
 
 	for(int i = 0; i < this->_population; ++i) {
-		this->indivs[i] = obj.indivs[i];
+		this->_indivs[i] = obj._indivs[i];
 	}
 
 	this->_bestIndivIndex = obj._bestIndivIndex;
@@ -50,40 +49,54 @@ Group& Group::operator=(const Group& obj) {
 	return *this;
 }
 
-void Group::operator=(Group&& obj) {
-	this->indivs          = obj.indivs;
+Group& Group::operator=(Group&& obj) {
+	this->_indivs          = obj._indivs;
 	this->_population     = obj._population;
 	this->_bestIndivIndex = obj._bestIndivIndex;
 	this->_averageAspl    = obj._averageAspl;
 	this->_worstAspl      = obj._worstAspl;
 	this->_indivVariation = obj._indivVariation;
 
-	obj.indivs = nullptr;
+	obj._indivs = nullptr;
+
+	return *this;
+}
+
+GridGraph& Group::operator[](int index) {
+	return _indivs[index];
+}
+
+const GridGraph& Group::operator[](int index) const {
+	return _indivs[index];
 }
 
 /// @brief 集団内の最良直径, 最良ASPL, 平均ASPL, 最悪ASPLを探索
 void Group::tally() {
 	int best = 0;
 	for(int i = 1; i < this->population(); ++i) {
-		if(indivs[i].betterThan(indivs[best])) best = i;
+		if(_indivs[i].betterThan(_indivs[best])) best = i;
 	}
 
 	int worst = 0;
 	for(int i = 1; i < this->population(); ++i) {
-		if(indivs[i].worseThan(indivs[worst])) worst = i;
+		if(_indivs[i].worseThan(_indivs[worst])) worst = i;
 	}
 
 	double sumAspl = 0;
 	for(int i = 0; i < this->population(); ++i) {
-		sumAspl += indivs[i].aspl();
+		sumAspl += _indivs[i].aspl();
 	}
 
 	this->_bestIndivIndex = best;
-	this->_bestDiameter = indivs[best].diameter();
-	this->_bestAspl     = indivs[best].aspl();
-	this->_worstAspl    = indivs[worst].aspl();
+	this->_bestDiameter = _indivs[best].diameter();
+	this->_bestAspl     = _indivs[best].aspl();
+	this->_worstAspl    = _indivs[worst].aspl();
 	this->_averageAspl  = sumAspl / this->population();
 	this->_indivVariation = countIndivVariation();
+}
+
+const GridGraph& Group::bestIndiv() const {
+	return _indivs[_bestIndivIndex];
 }
 
 int Group::countIndivVariation() const {
@@ -92,7 +105,7 @@ int Group::countIndivVariation() const {
 
 		bool duplicate = false;
 		for(int j = 0; j < i; ++j) {
-			if(indivs[i].matchGraph(indivs[j])) {
+			if(_indivs[i].matchGraph(_indivs[j])) {
 				duplicate = true;
 				break;
 			}

@@ -1,6 +1,7 @@
 #include "rankingSelect.hpp"
 #include <vector>
 #include <iostream>
+#include "odpGridGraphs.hpp"
 #include "../group.hpp"
 using namespace Cselab23Kimura::OdpGridGraphs;
 using namespace Cselab23Kimura::OdpGridGraphs::GA;
@@ -9,18 +10,18 @@ using std::vector;
 
 Group RankingSelect::moveSurvivors(Group& childs, Group& parents, std::mt19937& random) {
     int numIndiv = childs.population() + parents.population();
-    vector<Individual*> indivs(numIndiv);
+    vector<GridGraph*> indivs(numIndiv);
     vector<int> order(numIndiv);
 
     for(int i = 0; i < numIndiv; ++i) order[i] = i;
-    for(int i = 0; i < childs.population();  ++i) indivs[i] = &(childs.indivs[i]);
-    for(int i = 0; i < parents.population(); ++i) indivs[i + childs.population()] = &(parents.indivs[i]);
+    for(int i = 0; i < childs.population();  ++i) indivs[i] = &(childs[i]);
+    for(int i = 0; i < parents.population(); ++i) indivs[i + childs.population()] = &(parents[i]);
 
     //良い個体が前にくるようにソート
     for(int tail = numIndiv - 1; tail > 0; --tail) {
         for(int i = 0; i + 1 <= tail; ++i) {
-            Individual *indivA = indivs[order[i]];
-            Individual *indivB = indivs[order[i + 1]];
+            GridGraph *indivA = indivs[order[i]];
+            GridGraph *indivB = indivs[order[i + 1]];
 
             if(indivA->worseThan(*indivB)) {
                 int temp = order[i];
@@ -42,7 +43,7 @@ Group RankingSelect::moveSurvivors(Group& childs, Group& parents, std::mt19937& 
     for(int i = 0; i < numIndiv; ++i) {
         r -= (numIndiv - i) + 1;
         if(r <= 0) {
-            result.indivs[0] = std::move(*indivs[order[i]]);
+            result[0] = std::move(*indivs[order[i]]);
             return result;
         }
     }

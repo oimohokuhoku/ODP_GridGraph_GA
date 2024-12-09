@@ -16,7 +16,6 @@ namespace Cselab23Kimura::OdpGridGraphs::GA {
         void setPopulation(int population);
         void setIndivMutateProbability(double indivMutateProbability);
         void setGeneMutateProbability(double geneMutateProbability);
-        void setGenerationChangeModel(const std::string &generationChangeModel);
         void setSeed(int seed);
 
         inline int graphNumColumn() const { return _graphNumColumn; }
@@ -27,7 +26,6 @@ namespace Cselab23Kimura::OdpGridGraphs::GA {
         inline int population() const { return _population; }
         inline double indivMutateProbability() const { return _indivMutateProbability; }
         inline double geneMutateProbability() const { return _geneMutateProbability; }
-        inline std::string generationChangeModel() const { return _generationChangeModel; }
         inline int seed() const { return _seed; }
 
     private:
@@ -39,7 +37,6 @@ namespace Cselab23Kimura::OdpGridGraphs::GA {
         int _population;
         double _indivMutateProbability;
         double _geneMutateProbability;
-        std::string _generationChangeModel;
         int _seed;
     };
 

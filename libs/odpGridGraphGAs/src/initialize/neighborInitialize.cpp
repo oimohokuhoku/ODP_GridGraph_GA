@@ -11,13 +11,13 @@ NeighborInitialize::NeighborInitialize(const std::string& startEdgesFilepath, in
 
 Group NeighborInitialize::genearteInitialGroup(int population, std::mt19937& random) {
     Group initialGroup(population);
-    Individual startIndiv = EdgesFileReader::read(_startEdgesFilepath);
+    GridGraph startIndiv = EdgesFileReader::read(_startEdgesFilepath);
     TwoChange mutate;
     CountDifferentEdge countDiffEdge;
     int totalNumDiffEdge = 0;
 
     for(int i = 0; i < population; ++i) {
-        Individual indiv = startIndiv;
+        GridGraph indiv = startIndiv;
 
         for(int j = 0; j < _numMutate; ++j) {
             mutate(indiv, random);
@@ -26,7 +26,7 @@ Group NeighborInitialize::genearteInitialGroup(int population, std::mt19937& ran
         totalNumDiffEdge += countDiffEdge.count(indiv, startIndiv);
         indiv.evaluate();
         
-        initialGroup.indivs[i] = std::move(indiv);
+        initialGroup[i] = std::move(indiv);
     }
 
     this->_averageNumDiffEdge = totalNumDiffEdge / population;

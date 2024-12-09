@@ -5,13 +5,13 @@ namespace Cselab23Kimura::OdpGridGraphs {
     class GridGraph;
 
     namespace GA {
-        using Individual = GridGraph;
+        using GridGraph = GridGraph;
 
         namespace Crossovers {
             class Crossover {
             public:
                 virtual ~Crossover() = default;
-                virtual Individual execute(const Individual& parentA, const Individual& parentB, std::mt19937& random)= 0;
+                virtual GridGraph execute(const GridGraph& parentA, const GridGraph& parentB, std::mt19937& random)= 0;
             };
         }
     }

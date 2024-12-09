@@ -17,7 +17,7 @@ using std::mt19937;
 
 GeneticAlgorithm::GeneticAlgorithm(
     const GAConfiguration& config, 
-    unique_ptr<Initialize>& initialize,
+    Initialize *const initialize,
     mt19937& random
 ) : 
     _MAX_GENERATION(config.maxGeneration()),
@@ -26,7 +26,7 @@ GeneticAlgorithm::GeneticAlgorithm(
     _indivMutateProbability(config.indivMutateProbability()),
     _geneMutateProbability(config.geneMutateProbability())
 {
-    Individual::setDefaultGraphCondition(config.graphNumRow(), config.graphNumColumn(), config.graphDegree(), config.graphMaxLength());
+    GridGraph::setDefaultGraphCondition(config.graphNumRow(), config.graphNumColumn(), config.graphDegree(), config.graphMaxLength());
     this->_generation = 0;
     this->_group = new Group(config.population());
     this->_bestEverGraph = new GridGraph();
@@ -41,11 +41,11 @@ GeneticAlgorithm::~GeneticAlgorithm() {
 
 /// @brief 世代を進める.
 void GeneticAlgorithm::progressGeneration(
-    unique_ptr<CopySelects::CopySelect> &copySelect,
-    unique_ptr<Crossovers::Crossover> &crossover,
-    unique_ptr<Mutates::Mutate> &mutate,
-    unique_ptr<SurvivorSelects::SurvivorSelect>& survivorSelect,
-    mt19937& random
+    CopySelects::CopySelect *const copySelect,
+    Crossovers::Crossover *const crossover,
+    Mutates::Mutate *const mutate,
+    SurvivorSelects::SurvivorSelect *const survivorSelect,
+    std::mt19937& random
 ) {
     FillEmptyPortRandomly fillEmptyPort;
     LocalSearch localSearch;
@@ -59,20 +59,20 @@ void GeneticAlgorithm::progressGeneration(
     while(numNextIndivs < nextGroup.population()) {
         Group parents(numParent);
         for(int i = 0; i < numParent; ++i) {
-            parents.indivs[i] = _group->indivs[copySelect->selectIndex()];
+            parents[i] = (*_group)[copySelect->selectIndex()];
         }
 
 		Group childs(numCrossover);
         for(int i = 0; i < childs.population(); ++i) {
-            childs.indivs[i] = crossover->execute(parents.indivs[0], parents.indivs[1], random);
-            mutate->execute(childs.indivs[i], random);
+            childs[i] = crossover->execute(parents[0], parents[1], random);
+            mutate->execute(childs[i], random);
 		    //localSearch.localOptimize(childs.indivs[i]);
-            fillEmptyPort(childs.indivs[i], random);
+            fillEmptyPort(childs[i], random);
         }
 		
 		Group survivor = survivorSelect->moveSurvivors(childs, parents, random);
         for(int i = 0; i < survivor.population(); ++i) {
-            nextGroup.indivs[numNextIndivs++] = std::move(survivor.indivs[i]);
+            nextGroup[numNextIndivs++] = std::move(survivor[i]);
             if(numNextIndivs == nextGroup.population()) break;
         }
 	}

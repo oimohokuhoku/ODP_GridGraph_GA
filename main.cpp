@@ -18,7 +18,6 @@ static const string OPTION_DEGREE      = "-d";
 static const string OPTION_MAX_LENGTH  = "-l";
 static const string OPTION_POPULATION  = "-p";
 static const string OPTION_MAX_GENERATION = "-g";
-static const string OPTION_GENERATION_CHANGE_MODEL  = "-m";
 static const string OPTION_INDIV_MUTATE_PROBABILITY = "-im";
 static const string OPTION_GENE_MUTATE_PROBABILITY   = "-gm";
 static const string OPTION_RESULT_FILENAME = "-f";
@@ -34,8 +33,7 @@ int main(int argc, char* argv[]) {
     gaConfig.setMaxGeneration(args.getValue<int>(OPTION_MAX_GENERATION));
     gaConfig.setPopulation(args.getValue<int>(OPTION_POPULATION));
     gaConfig.setIndivMutateProbability(args.getValue<double>(OPTION_INDIV_MUTATE_PROBABILITY));
-    gaConfig.setGeneMutateProbability(args.getValue<double>(OPTION_GENE_MUTATE_PROBABILITY)); 
-    gaConfig.setGenerationChangeModel(args.getValue<std::string>(OPTION_GENERATION_CHANGE_MODEL));
+    gaConfig.setGeneMutateProbability(args.getValue<double>(OPTION_GENE_MUTATE_PROBABILITY));
     gaConfig.setSeed(args.getValue<int>(OPTION_SEED)); 
     gaConfig.showConfigList();
 
@@ -49,20 +47,17 @@ int main(int argc, char* argv[]) {
     Directory::create(executedDirName);
 
     std::mt19937 random(gaConfig.seed());
+    Crossovers::GenerateEmbeddMapUnits* embeddMapUnits = new Crossovers::GenerateOrthogonalBlockEmbeddMapUnits();
 
-    unique_ptr<Initialize> initialize(new RandomInitialize());
+    Initialize* initialize = new RandomInitialize();
+    CopySelects::CopySelect* copySelect = new CopySelects::RandomSelectWithoutReplacement(gaConfig.seed());
+    Crossovers::Crossover*   crossover  = new Crossovers::BlockCrossover(embeddMapUnits);
+    Mutates::Mutate*         mutate     = new Mutates::TwoChangeMutate(gaConfig.indivMutateProbability(), gaConfig.geneMutateProbability());
 
-    unique_ptr<CopySelects::CopySelect> copySelect(new CopySelects::RandomSelectWithoutReplacement(gaConfig.seed()));
-
-    unique_ptr<Crossovers::GenerateEmbeddMapUnits> embeddMapUnits(new Crossovers::GenerateOrthogonalBlockEmbeddMapUnits());
-    unique_ptr<Crossovers::Crossover> crossover(new Crossovers::BlockCrossover(embeddMapUnits));
-
-    unique_ptr<Mutates::Mutate> mutate(new Mutates::TwoChangeMutate(gaConfig.indivMutateProbability(), gaConfig.geneMutateProbability()));
-
-    std::vector<unique_ptr<SurvivorSelects::SurvivorSelect>> survivorSelects;
-    survivorSelects.push_back(make_unique<SurvivorSelects::ElitistSelect>());
-    survivorSelects.push_back(make_unique<SurvivorSelects::RankingSelect>());
-    unique_ptr<SurvivorSelects::SurvivorSelect> survivorSelect(new SurvivorSelects::MixSelect(survivorSelects));
+    std::vector<SurvivorSelects::SurvivorSelect*> survivorSelects;
+    survivorSelects.push_back(new SurvivorSelects::ElitistSelect());
+    survivorSelects.push_back(new SurvivorSelects::RankingSelect());
+    SurvivorSelects::SurvivorSelect* survivorSelect = new SurvivorSelects::MixSelect(survivorSelects);
     
     GeneticAlgorithm ga(gaConfig, initialize, random);
     GAParameterTable paramTable;
@@ -86,5 +81,15 @@ int main(int argc, char* argv[]) {
     }
 
     ga.saveBestEverEdgeFile(executedDirName);
+
+    delete embeddMapUnits;
+    delete initialize;
+    delete copySelect;
+    delete crossover;
+    delete mutate;
+    for(size_t i = 0; i < survivorSelects.size(); ++i) {
+        delete survivorSelects[i];
+    }
+    delete survivorSelect;
     return 0;
 }

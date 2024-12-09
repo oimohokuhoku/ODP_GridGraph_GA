@@ -1,6 +1,4 @@
 #include "randomize.hpp"
-
-
 #include "gridGraph.hpp"
 #include "grid.hpp"
 #include "twoChange.hpp"

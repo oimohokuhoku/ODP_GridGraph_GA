@@ -12,16 +12,16 @@ using namespace Cselab23Kimura::OdpGridGraphs::GA::Crossovers;
 using std::vector;
 using std::unique_ptr;
 
-BlockCrossoverWithDMSXf::BlockCrossoverWithDMSXf(unique_ptr<GenerateEmbeddMapUnits> &generateEmbeddMapUnits, double saveParentProbability) :
+BlockCrossoverWithDMSXf::BlockCrossoverWithDMSXf(GenerateEmbeddMapUnits* generateEmbeddMapUnits, double saveParentProbability) :
     _generateEmbeddMapUnits(generateEmbeddMapUnits),
     _saveParentProbability(saveParentProbability)
 {}
 
 /// @brief DMSXf形式でのブロック交叉
 /// @return 生成された子個体
-Individual BlockCrossoverWithDMSXf::execute(const Individual& parentA, const Individual& parentB, std::mt19937& random) {
+GridGraph BlockCrossoverWithDMSXf::execute(const GridGraph& parentA, const GridGraph& parentB, std::mt19937& random) {
     //For _blendRate calculation
-    Individual const *startParent, *endParent;
+    GridGraph const *startParent, *endParent;
     if(parentA.betterThan(parentB)) {
         startParent = &parentA;
         endParent   = &parentB;
@@ -36,18 +36,18 @@ Individual BlockCrossoverWithDMSXf::execute(const Individual& parentA, const Ind
     vector<bool> appliedUnit(embeddMapUnits.size(), false);
     EmbeddMap currentEmbeddMap(startParent->numRow(), startParent->numColumn());
 
-    Individual bestIndiv;
-    Individual currentIndiv;
+    GridGraph bestIndiv;
+    GridGraph currentIndiv;
 
     for(size_t step = 0; step < embeddMapUnits.size() - 1; ++step) {
-        Individual bestNextIndiv;
+        GridGraph bestNextIndiv;
         int bestUnit = -1;
 
         for(int unitIndex = 0; unitIndex < embeddMapUnits.size(); ++unitIndex) {
             if(appliedUnit[unitIndex]) continue;
 
             EmbeddMap nextEmbeddMap = currentEmbeddMap.overlay(embeddMapUnits[unitIndex]);
-            Individual nextIndiv    = embeddPartialGraph(*startParent, *endParent, nextEmbeddMap, random);
+            GridGraph nextIndiv    = embeddPartialGraph(*startParent, *endParent, nextEmbeddMap, random);
             nextIndiv.evaluate();
             
             if(unitIndex == 0 || nextIndiv.betterThan(bestNextIndiv)) {

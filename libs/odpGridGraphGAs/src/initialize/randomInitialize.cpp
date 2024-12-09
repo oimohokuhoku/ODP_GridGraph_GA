@@ -10,8 +10,8 @@ Group RandomInitialize::genearteInitialGroup(int population, std::mt19937& rando
     Group initialGroup(population);
 
     for(int i = 0; i < population; ++i) {
-        randomize(initialGroup.indivs[i], random);
-        initialGroup.indivs[i].evaluate();
+        randomize(initialGroup[i], random);
+        initialGroup[i].evaluate();
     }
 
     return initialGroup;

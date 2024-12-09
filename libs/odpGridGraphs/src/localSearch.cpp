@@ -1,5 +1,4 @@
 #include "localSearch.hpp"
-
 #include <vector>
 #include "gridGraph.hpp"
 #include "grid.hpp"
