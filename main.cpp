@@ -2,7 +2,9 @@
 #include <memory>
 #include <random>
 #include "odpGridGraphGAs.hpp"
+#include "odpGridGraphs.hpp"
 #include "commonLibraries.hpp"
+using namespace Cselab23Kimura::OdpGridGraphs;
 using namespace Cselab23Kimura::OdpGridGraphs::GA;
 using namespace Cselab23Kimura::CommonLibrarys;
 
@@ -47,17 +49,13 @@ int main(int argc, char* argv[]) {
     Directory::create(executedDirName);
 
     std::mt19937 random(gaConfig.seed());
-    Crossovers::GenerateEmbeddMapUnits* embeddMapUnits = new Crossovers::GenerateOrthogonalBlockEmbeddMapUnits();
 
-    Initialize* initialize = new RandomInitialize();
+    Initialize* initialize = new RandomInitialize(Grid(gaConfig.graphNumRow(), gaConfig.graphNumColumn(), gaConfig.graphDegree(), gaConfig.graphMaxLength()));
     CopySelects::CopySelect* copySelect = new CopySelects::RandomSelectWithoutReplacement(gaConfig.seed());
-    Crossovers::Crossover*   crossover  = new Crossovers::BlockCrossover(embeddMapUnits);
-    Mutates::Mutate*         mutate     = new Mutates::TwoChangeMutate(gaConfig.indivMutateProbability(), gaConfig.geneMutateProbability());
-
-    std::vector<SurvivorSelects::SurvivorSelect*> survivorSelects;
-    survivorSelects.push_back(new SurvivorSelects::ElitistSelect());
-    survivorSelects.push_back(new SurvivorSelects::RankingSelect());
-    SurvivorSelects::SurvivorSelect* survivorSelect = new SurvivorSelects::MixSelect(survivorSelects);
+    Crossovers::GenerateEmbeddMapUnits* embeddMapUnits = new Crossovers::GenerateOrthogonalBlockEmbeddMapUnits();
+    Crossovers::Crossover* crossover = new Crossovers::BlockCrossoverWithDMSXf(embeddMapUnits, 1.0);
+    Mutates::Mutate* mutate= new Mutates::TwoChangeMutate(gaConfig.indivMutateProbability(), gaConfig.geneMutateProbability());
+    SurvivorSelects::SurvivorSelect* survivorSelect = new SurvivorSelects::PassAllChild();
     
     GeneticAlgorithm ga(gaConfig, initialize, random);
     GAParameterTable paramTable;
@@ -87,9 +85,6 @@ int main(int argc, char* argv[]) {
     delete copySelect;
     delete crossover;
     delete mutate;
-    for(size_t i = 0; i < survivorSelects.size(); ++i) {
-        delete survivorSelects[i];
-    }
     delete survivorSelect;
     return 0;
 }

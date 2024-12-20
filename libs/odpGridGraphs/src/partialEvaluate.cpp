@@ -8,7 +8,7 @@ using namespace Cselab23Kimura::OdpGridGraphs;
 //後で消す
 #include <iostream>
 
-PartialFitness PartialEvaluateBFS::operator() (const GridGraph& indiv, const vector<bool>& targetNodeMap) {
+PartialFitness PartialEvaluateBFS::operator() (const GridGraph& graph, const vector<bool>& targetNodeMap) {
     std::cerr << "PertialEvaluateBFS::operator(GridGraph, std::vector<bool>) is not implemented" << std::endl;
     exit(EXIT_FAILURE);
 
@@ -17,10 +17,10 @@ PartialFitness PartialEvaluateBFS::operator() (const GridGraph& indiv, const vec
     int numTargetNode = countTargetNode(targetNodeMap);
     int totalPathLength = 0;
     int diameter = 0;
-    for(int startNode = 0; startNode < indiv.numNode(); ++startNode) {
+    for(int startNode = 0; startNode < graph.numNode(); ++startNode) {
         if(targetNodeMap[startNode]) {
             int sumPathLength, diam;
-            computePathLength(indiv, targetNodeMap, numTargetNode, startNode, &diam, &sumPathLength);
+            computePathLength(graph, targetNodeMap, numTargetNode, startNode, &diam, &sumPathLength);
 
             totalPathLength += sumPathLength;
             if(diameter < diam) diameter = diam;
@@ -33,7 +33,10 @@ PartialFitness PartialEvaluateBFS::operator() (const GridGraph& indiv, const vec
     return result;
 }
 
-void PartialEvaluateBFS::computePathLength(const GridGraph& indiv, const vector<bool>& targetNodeMap, int numTargetNode, int startNode, int* diameterStorage, int* pathLengthStorage) {
+void PartialEvaluateBFS::computePathLength(const GridGraph& graph, const vector<bool>& targetNodeMap, int numTargetNode, int startNode, int* diameterStorage, int* pathLengthStorage) {
+    std::cerr << "PartialEvaluateBFS::computePathLength(GridGraph, vector<bool>, int, int, int*, int*)" << std::endl;
+    std::cerr << "is not implemented" << std::endl;
+    exit(EXIT_FAILURE);
     /*Queue<int> queue(indiv.numNode());
     vector<bool> found(indiv.numNode(), false);
     int sumPathLength = 0;

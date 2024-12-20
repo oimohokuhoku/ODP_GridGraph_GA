@@ -7,7 +7,7 @@ namespace Cselab23Kimura::OdpGridGraphs
     class CheckLinkedGraph {
     public:
         CheckLinkedGraph() = default;
-        bool checkLinked(const GridGraph &indiv);
+        bool checkLinked(const GridGraph &graph);
         int dislinkedNode() const { return _disLinkedNode; };
 
     private:

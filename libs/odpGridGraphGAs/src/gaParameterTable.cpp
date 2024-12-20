@@ -39,7 +39,7 @@ void GAParameterTable::showParameter(const GeneticAlgorithm& ga) const {
     cout << setw(_stepWidth) << ga.generation()   << "| ";
     cout << setw(_diamWidth) << ga.bestDiameter() << "| ";
     cout << std::setprecision(_asplDigit);
-    cout << setw(_asplWidth) << ga.bestASPL()    << "| ";
+    cout << setw(_asplWidth) << ga.bestAspl()    << "| ";
     cout << setw(_asplWidth) << ga.averageASPL() << "| ";
     cout << setw(_asplWidth) << ga.worstASPL()   << "| ";
     cout << std::setprecision(_defaultDoubleDigit);

@@ -21,8 +21,8 @@ void StairsSelect::decideSequence(const Group& group) {
     //FIXME: バブルソート使ってるけど、もっといいアルゴリズムに変えたい.
     for(int end = _population; end > 0; --end) {
 		for(int i = 0; i + 1 < end; ++i) {
-			const GridGraph& before = group[ranking[i]];
-			const GridGraph& after  = group[ranking[i + 1]];
+			const GridGraph& before = *(group[ranking[i]]);
+			const GridGraph& after  = *(group[ranking[i + 1]]);
 			if(before.betterThan(after)) {
 				int temp = ranking[i];
 				ranking[i] = ranking[i + 1];

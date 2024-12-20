@@ -8,7 +8,7 @@ namespace Cselab23Kimura::OdpGridGraphs {
     class AdjAspl {
     public:
         AdjAspl() = default;
-        void operator()(GridGraph &indiv);
+        void operator()(const GridGraph &graph);
         inline int diameter() const { return _diameter; }
         inline double aspl()  const { return _aspl; }
         inline int dislinkedNode() { return _dislinkedNode; }

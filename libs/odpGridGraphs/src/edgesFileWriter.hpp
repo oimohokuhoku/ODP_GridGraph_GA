@@ -8,7 +8,7 @@ namespace Cselab23Kimura::OdpGridGraphs
 
     class EdgesFileWriter {
     public:
-        static void write(const GridGraph &indiv, const std::string &filepath);
+        static void write(const GridGraph &graph, const std::string &filepath);
     private:
         EdgesFileWriter() = delete;
     };

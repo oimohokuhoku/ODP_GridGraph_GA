@@ -18,7 +18,7 @@ GaCsvRecorder::GaCsvRecorder(const std::string& filepath): _ofs(std::ofstream(fi
 void GaCsvRecorder::record(const GeneticAlgorithm& ga) {
     _ofs << ga.generation() << ",";
     _ofs << ga.bestDiameter() << ",";
-    _ofs << ga.bestASPL() << ",";
+    _ofs << ga.bestAspl() << ",";
     _ofs << ga.averageASPL() << ",";
     _ofs << ga.worstASPL() << ",";
     _ofs << ga.indivVariation() << ",";

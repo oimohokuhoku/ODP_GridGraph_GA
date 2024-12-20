@@ -9,21 +9,34 @@ using namespace Cselab23Kimura::OdpGridGraphs::GA::SurvivorSelects;
 using std::vector;
 
 Group RankingSelect::moveSurvivors(Group& childs, Group& parents, std::mt19937& random) {
+    //FIXME: リファクタリング
     int numIndiv = childs.population() + parents.population();
-    vector<GridGraph*> indivs(numIndiv);
+    
     vector<int> order(numIndiv);
-
     for(int i = 0; i < numIndiv; ++i) order[i] = i;
-    for(int i = 0; i < childs.population();  ++i) indivs[i] = &(childs[i]);
-    for(int i = 0; i < parents.population(); ++i) indivs[i + childs.population()] = &(parents[i]);
+
+    vector<GridGraph*> indivs(numIndiv);
+    for(int i = 0; i < childs.population();  ++i) {
+        if(childs[i].has_value())
+            indivs[i] = &(childs[i].value());
+        else   
+            indivs[i] = nullptr;
+    }
+    for(int i = 0; i < parents.population(); ++i) {
+        if(parents[i].has_value())
+            indivs[i + childs.population()] = &(parents[i].value());
+        else
+            indivs[i + childs.population()] = nullptr;
+    }
 
     //良い個体が前にくるようにソート
     for(int tail = numIndiv - 1; tail > 0; --tail) {
         for(int i = 0; i + 1 <= tail; ++i) {
-            GridGraph *indivA = indivs[order[i]];
-            GridGraph *indivB = indivs[order[i + 1]];
+            const GridGraph* indivA = indivs[order[i]];
+            const GridGraph* indivB = indivs[order[i + 1]];
 
-            if(indivA->worseThan(*indivB)) {
+            if(indivB == nullptr) continue;
+            if(indivA == nullptr || indivA->worseThan(*indivB)) {
                 int temp = order[i];
                 order[i] = order[i + 1];
                 order[i + 1] = temp;
@@ -33,12 +46,11 @@ Group RankingSelect::moveSurvivors(Group& childs, Group& parents, std::mt19937& 
 
     //nullオブジェクトを除外
     for(int i = 0; i < numIndiv; ++i) {
-        if(indivs[order[i]]->adjacent == nullptr) { numIndiv--; }
+        if(indivs[order[i]] == nullptr) { numIndiv--; }
     }
 
     Group result(1);
     int sumRank = ((numIndiv - 1) * numIndiv) / 2; //sum of 0 to (numIndiv-1)
-
     int r = random() % sumRank;
     for(int i = 0; i < numIndiv; ++i) {
         r -= (numIndiv - i) + 1;

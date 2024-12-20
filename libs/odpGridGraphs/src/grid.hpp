@@ -9,37 +9,37 @@ namespace Cselab23Kimura::OdpGridGraphs
     class Grid
     {
     public:
-        Grid(const GridGraph &indiv);
+        const int numRow;
+        const int numColumn;
+        const int numNode;
+        const int degree;
+        const int maxLength;
+
+        Grid(int numRow, int numColumn, int degree, int maxLength);
         inline int toNodeIndex(int row, int column) const;
-        inline int getColumn(int nodeIndex) const;
-        inline int getRow(int nodeIndex) const;
+        inline int getColumnIndex(int nodeIndex) const;
+        inline int getRowIndex(int nodeIndex) const;
         inline int calcDistance(int node1, int node2) const;
         inline bool closeEnough(int node1, int node2) const;
-        std::vector<int> selectNearNode(int node) const;
-
-    private:
-        const int _numRow;
-        const int _numColumn;
-        const int _degree;
-        const int _maxLength;
+        std::vector<int> selectConnectableNodes(int node) const;
     };
 
     /// @brief 2次元表記(行番号・列番号)から1次元表記へ変換
     inline int Grid::toNodeIndex(int row, int column) const
     {
-        return (row * _numColumn) + column;
+        return (row * numColumn) + column;
     }
 
     /// @brief 1次元表記から2次元表記の列番号を取得
-    inline int Grid::getColumn(int nodeIndex) const
+    inline int Grid::getColumnIndex(int nodeIndex) const
     {
-        return nodeIndex % _numColumn;
+        return nodeIndex % numColumn;
     }
 
     /// @brief 1次元表記から2次元表記の行番号を取得
-    inline int Grid::getRow(int nodeIndex) const
+    inline int Grid::getRowIndex(int nodeIndex) const
     {
-        return nodeIndex / _numColumn;
+        return nodeIndex / numColumn;
     }
 
     /// @brief 頂点間のマンハッタン距離を計算
@@ -47,10 +47,10 @@ namespace Cselab23Kimura::OdpGridGraphs
     /// @param node2 1次元表記の頂点
     inline int Grid::calcDistance(int node1, int node2) const
     {
-        int row1 = getRow(node1);
-        int column1 = getColumn(node1);
-        int row2 = getRow(node2);
-        int column2 = getColumn(node2);
+        int row1 = getRowIndex(node1);
+        int column1 = getColumnIndex(node1);
+        int row2 = getRowIndex(node2);
+        int column2 = getColumnIndex(node2);
 
         int dRow = row1 - row2;
         int dColumn = column1 - column2;
@@ -67,6 +67,6 @@ namespace Cselab23Kimura::OdpGridGraphs
     /// @param node2 1次元表記の頂点番号
     inline bool Grid::closeEnough(int node1, int node2) const
     {
-        return (calcDistance(node1, node2) <= _maxLength);
+        return (calcDistance(node1, node2) <= maxLength);
     }
 }

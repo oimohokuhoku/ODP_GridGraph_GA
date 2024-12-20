@@ -1,4 +1,5 @@
 #pragma once
+#include <optional>
 
 namespace Cselab23Kimura::OdpGridGraphs {
 	class GridGraph;
@@ -14,29 +15,35 @@ namespace Cselab23Kimura::OdpGridGraphs {
 
 			Group& operator=(const Group &obj);
 			Group& operator=(Group &&obj);
-			GridGraph& operator[](int index);
-			const GridGraph& operator[](int index) const;
 
-			void tally();
+			std::optional<GridGraph>& operator[](int index);
+			const std::optional<GridGraph>& operator[](int index) const;
+
 			const GridGraph& bestIndiv() const;
+			int bestDiameter() const;
+			int worstDiameter() const;
+			double averageDiameter() const;
+			double bestAspl() const;
+			double worstAspl() const;
+			double averageAspl() const;
+			int indivVariation() const;
 
 			inline int population() const { return _population; }
-			inline int bestDiameter() const { return _bestDiameter; }
-			inline double bestASPL() const { return _bestAspl; }
-			inline double averageASPL() const { return _averageAspl; }
-			inline double worstASPL() const { return _worstAspl; }
-			inline int indivVariation() const { return _indivVariation; }
 
 		private:
-			GridGraph *_indivs;
-			int _population;
-			int _bestIndivIndex;
-			int _bestDiameter;
-			double _bestAspl;
-			double _averageAspl;
-			double _worstAspl;
-			int _indivVariation;
+			static constexpr int _UNCALCULATED = -1;
+			std::optional<GridGraph> *_indivs;
+			const int _population;
+			mutable int _bestIndivIndex;
+			mutable int _worstIndivIndex;
+			mutable double _averageDiameter;
+			mutable double _averageAspl;
+			mutable int _indivVariation;
 
+			int findBestIndivIndex() const;
+			int findWorstIndivIndex() const;
+			double calcAverageAspl() const;
+			double calcAverageDiameter() const;
 			int countIndivVariation() const;
 		};
 	}

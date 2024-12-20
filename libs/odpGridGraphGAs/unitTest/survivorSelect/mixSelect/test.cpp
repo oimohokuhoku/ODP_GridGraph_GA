@@ -41,7 +41,7 @@ public:
 
 bool selected_individuals() {
     constexpr int population = 5;
-    RandomInitialize randomGraphGenerate;
+    RandomInitialize randomGraphGenerate(Grid(5, 5, 4, 2));
     std::mt19937 mt(42);
 
 
@@ -62,13 +62,13 @@ bool selected_individuals() {
 
     unitTest.assertEqualInt("group size is correct" ,survivor.population(), 6);
 
-    unitTest.assertTrue("moved1", survivor[0].matchGraph(childSrc[0]));
-    unitTest.assertTrue("moved2", survivor[1].matchGraph(childSrc[1]));
-    unitTest.assertTrue("moved3", survivor[2].matchGraph(parentSrc[0]));
+    unitTest.assertTrue("moved1", survivor[0]->matchGraph(*childSrc[0]));
+    unitTest.assertTrue("moved2", survivor[1]->matchGraph(*childSrc[1]));
+    unitTest.assertTrue("moved3", survivor[2]->matchGraph(*parentSrc[0]));
 
-    unitTest.assertTrue("moved4", survivor[3].matchGraph(childSrc[2]));
-    unitTest.assertTrue("moved5", survivor[4].matchGraph(parentSrc[1]));
-    unitTest.assertTrue("moved6", survivor[5].matchGraph(parentSrc[2]));
+    unitTest.assertTrue("moved4", survivor[3]->matchGraph(*childSrc[2]));
+    unitTest.assertTrue("moved5", survivor[4]->matchGraph(*parentSrc[1]));
+    unitTest.assertTrue("moved6", survivor[5]->matchGraph(*parentSrc[2]));
 
     unitTest.showResult();
     return unitTest.successAll();
@@ -76,7 +76,6 @@ bool selected_individuals() {
 
 int main(void) {
     bool success = true;
-    GridGraph::setDefaultGraphCondition(5, 5, 4, 2);
 
     success &= selected_individuals();
 

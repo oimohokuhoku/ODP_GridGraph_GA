@@ -41,7 +41,7 @@ namespace Cselab23Kimura::OdpGridGraphs::GA
 
         inline int generation() const { return _generation; }
         int bestDiameter() const;
-        double bestASPL() const;
+        double bestAspl() const;
         double averageASPL() const;
         double worstASPL() const;
         int indivVariation() const;

@@ -6,74 +6,55 @@ using namespace Cselab23Kimura::OdpGridGraphs;
 using namespace Cselab23Kimura::OdpGridGraphs::GA;
 using std::string;
 
-const std::string EdgesFile1 = "h5w5d4r2_d4l226667.edges";
-const std::string EdgesFile2 = "h5w5d4r2_d4l227333.edges";
-const std::string EdgesFile3 = "h5w5d4r2_d4l227667.edges";
-const std::string EdgesFile4 = "h5w5d4r2_d4l230333.edges";
-const std::string EdgesFile5 = "h5w5d4r2_d4l231000.edges";
-
-bool substitute_for_same_population_group() {
-    int population = 2;
+bool copy_group() {
+    int population = 3;
 
     Group groupA(population);
-    groupA[0] = EdgesFileReader::read(EdgesFile1);
-    groupA[1] = EdgesFileReader::read(EdgesFile2);
-
     Group groupB(population);
-    groupB[0] = EdgesFileReader::read(EdgesFile3);
-    groupB[1] = EdgesFileReader::read(EdgesFile4);
+    groupA[0] = Tests::SimpleGraphGenerate::h2w2d3r2_A();
+    groupA[1] = std::nullopt;
+    groupA[2] = Tests::SimpleGraphGenerate::h2w2d3r2_B();
 
     UnitTest unitTest("substitute_for_same_population_group");
     groupB = groupA;
-    unitTest.assertEqualInt("population equal", groupA.population(), groupB.population());
-    for(int i = 0; i < population; ++i) {
-        unitTest.assertTrue(
-            "individual match",
-            groupA[i].matchGraph(groupB[i])
-        );
-    }
+    unitTest.assertTrue("object copy", groupB[0]->matchGraph(*groupA[0]));
+    unitTest.assertFalse("empty copy", groupB[1].has_value());
+    unitTest.assertTrue("object copy", groupB[2]->matchGraph(*groupA[2]));
     unitTest.showResult();
 
     return unitTest.successAll();
 }
 
-bool substitute_for_different_population_group() {
-    Group groupA(3);
-    groupA[0] = EdgesFileReader::read(EdgesFile1);
-    groupA[1] = EdgesFileReader::read(EdgesFile2);
-    groupA[2] = EdgesFileReader::read(EdgesFile5);
-
-    Group groupB(2);
-    groupB[0] = EdgesFileReader::read(EdgesFile3);
-    groupB[1] = EdgesFileReader::read(EdgesFile4);
-    
-    UnitTest unitTest("substitute_for_different_population_group");
-    groupB = groupA;
-    unitTest.assertEqualInt("population equal", groupA.population(), groupB.population());
-    for(int i = 0; i < groupA.population(); ++i) {
-        unitTest.assertTrue(
-            "individual match",
-            groupA[i].matchGraph(groupB[i])
-        );
-    }
-    unitTest.showResult();
-
-    return unitTest.successAll();
-}
-
-bool select_without_replacement() {
+bool tally_fitness() {
     Group group(5);
-    group[0] = EdgesFileReader::read(EdgesFile1);
-    group[1] = EdgesFileReader::read(EdgesFile2);
-    group[2] = EdgesFileReader::read(EdgesFile3);
-    group[3] = EdgesFileReader::read(EdgesFile4);
-    group[4] = EdgesFileReader::read(EdgesFile5);
+    group[0] = std::nullopt;
+    group[1] = Tests::SimpleGraphGenerate::h2w2d3r2_A();
+    group[2] = std::nullopt;
+    group[3] = Tests::SimpleGraphGenerate::h2w2d3r2_B();
+    group[4] = Tests::SimpleGraphGenerate::h2w2d3r2_C();
 
     UnitTest unitTest("tally_fitness");
-    group.tally();
-    unitTest.assertEqualInt("best diameter", group.bestDiameter(), 4);
-    unitTest.assertEqualDouble("best ASPL", group.bestASPL(),  2.26667, 4);
-    unitTest.assertEqualDouble("worst ASPL", group.worstASPL(), 2.31000, 3);
+    unitTest.assertEqualInt("best diameter", 1, group.bestDiameter());
+    unitTest.assertEqualDouble("best aspl" , 1.0, group.bestAspl(), 1);
+    unitTest.assertEqualInt("worst diameter", 2, group.worstDiameter());
+    unitTest.assertEqualDouble("worst aspl" , 1.33333, group.worstAspl(), 5);
+    unitTest.assertEqualDouble("average diameter", 1.66666, group.averageDiameter(), 5);
+    unitTest.assertEqualDouble("average aspl"    , 1.16666, group.averageAspl(), 5);
+    
+    unitTest.showResult();
+    return unitTest.successAll();
+}
+
+bool count_individual_variation() {
+    Group group(5);
+    group[0] = Tests::SimpleGraphGenerate::h2w2d3r2_A();
+    group[1] = Tests::SimpleGraphGenerate::h2w2d3r2_A();
+    group[2] = std::nullopt;
+    group[3] = Tests::SimpleGraphGenerate::h2w2d3r2_A();
+    group[4] = Tests::SimpleGraphGenerate::h2w2d3r2_B();
+
+    UnitTest unitTest("count_individual_variation");
+    unitTest.assertEqualInt("indiv_variation", 2, group.indivVariation());
 
     unitTest.showResult();
     return unitTest.successAll();
@@ -81,11 +62,10 @@ bool select_without_replacement() {
 
 int main(void) {
     bool success = true;
-    GridGraph::setDefaultGraphCondition(5, 5, 4, 2);
 
-    success &= substitute_for_same_population_group();
-    success &= substitute_for_different_population_group();
-    success &= select_without_replacement();
+    success &= copy_group();
+    success &= tally_fitness();
+    success &= count_individual_variation();
 
     if(success) return EXIT_SUCCESS;
     else        return EXIT_FAILURE;

@@ -11,12 +11,14 @@ using namespace Cselab23Kimura::OdpGridGraphs::GA::Crossovers;
 /// @brief indiv0にindiv1の部分グラフを埋め込む.
 /// @param embeddMap インデックスが頂点の一次元表記に対応する配列.
 GridGraph EmbeddPartialGraph::operator() (const GridGraph& indiv0, const GridGraph& indiv1, const EmbeddMap& embeddMap, std::mt19937& random) {
-    GridGraph newIndiv;
+    FillEmptyPortRandomly fillEmptyPort;
+    GridGraph newIndiv(indiv0.grid());
     newIndiv.clear();
 
     inheritEdgesWithEmbeddMap(newIndiv, indiv0, indiv1, embeddMap);
     inheritShareEdges(newIndiv, indiv0, indiv1);
     inheritRandomEdges(newIndiv, indiv0, indiv1, random);
+    fillEmptyPort(newIndiv, random);
 
     return newIndiv;
 }

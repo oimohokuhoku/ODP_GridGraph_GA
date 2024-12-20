@@ -8,7 +8,7 @@ namespace Cselab23Kimura::OdpGridGraphs
     class FillEmptyPortRandomly {
     public:
         FillEmptyPortRandomly() = default;
-        void operator()(GridGraph &indiv, std::mt19937& random);
+        void operator()(GridGraph &graph, std::mt19937& random);
 
     private:
         FillEmptyPortRandomly(FillEmptyPortRandomly &obj) = delete;

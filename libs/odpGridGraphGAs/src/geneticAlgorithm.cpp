@@ -26,13 +26,11 @@ GeneticAlgorithm::GeneticAlgorithm(
     _indivMutateProbability(config.indivMutateProbability()),
     _geneMutateProbability(config.geneMutateProbability())
 {
-    GridGraph::setDefaultGraphCondition(config.graphNumRow(), config.graphNumColumn(), config.graphDegree(), config.graphMaxLength());
     this->_generation = 0;
     this->_group = new Group(config.population());
-    this->_bestEverGraph = new GridGraph();
+    this->_bestEverGraph = new GridGraph(config.graphNumRow(), config.graphNumColumn(), config.graphDegree(), config.graphMaxLength());
 
     *_group = initialize->genearteInitialGroup(config.population(), random);
-    _group->tally();
 }
 
 GeneticAlgorithm::~GeneticAlgorithm() {
@@ -47,8 +45,6 @@ void GeneticAlgorithm::progressGeneration(
     SurvivorSelects::SurvivorSelect *const survivorSelect,
     std::mt19937& random
 ) {
-    FillEmptyPortRandomly fillEmptyPort;
-    LocalSearch localSearch;
     Group nextGroup(_group->population());
 
     int numParent = 2;
@@ -64,10 +60,8 @@ void GeneticAlgorithm::progressGeneration(
 
 		Group childs(numCrossover);
         for(int i = 0; i < childs.population(); ++i) {
-            childs[i] = crossover->execute(parents[0], parents[1], random);
-            mutate->execute(childs[i], random);
-		    //localSearch.localOptimize(childs.indivs[i]);
-            fillEmptyPort(childs[i], random);
+            childs[i] = crossover->execute(*(parents[0]), *(parents[1]), random);
+            mutate->execute(*(childs[i]), random);
         }
 		
 		Group survivor = survivorSelect->moveSurvivors(childs, parents, random);
@@ -77,9 +71,12 @@ void GeneticAlgorithm::progressGeneration(
         }
 	}
     *(this->_group) = std::move(nextGroup);
-    
-    this->_group->tally();
     this->_generation++;
+
+    LocalSearch localSearch;
+    for(int i = 0; i < _group->population(); ++i) {
+        localSearch.localOptimize(*(*_group)[i]);
+    }
 
     if(!_bestEverGraph->betterThan(_group->bestIndiv())) {
         *_bestEverGraph = _group->bestIndiv();
@@ -100,7 +97,7 @@ void GeneticAlgorithm::saveBestEverEdgeFile(const std::string& dirPath) const {
 }
 
 int GeneticAlgorithm::bestDiameter() const   { return _group->bestDiameter(); }
-double GeneticAlgorithm::bestASPL() const    { return _group->bestASPL(); }
-double GeneticAlgorithm::averageASPL() const { return _group->averageASPL(); }
-double GeneticAlgorithm::worstASPL() const   { return _group->worstASPL(); }
+double GeneticAlgorithm::bestAspl() const    { return _group->bestAspl(); }
+double GeneticAlgorithm::averageASPL() const { return _group->averageAspl(); }
+double GeneticAlgorithm::worstASPL() const   { return _group->worstAspl(); }
 int GeneticAlgorithm::indivVariation() const { return _group->indivVariation(); }

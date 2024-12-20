@@ -16,7 +16,6 @@ BlockCrossover::BlockCrossover(GenerateEmbeddMapUnits *const generateEmbeddMapUn
 
 GridGraph BlockCrossover::execute(const GridGraph& parentA, const GridGraph& parentB, std::mt19937& random) {
     EmbeddPartialGraph embeddPartialGraph;
-    FillEmptyPortRandomly fillEmptyPort;
     vector<EmbeddMap> embeddMapUnits = _generateEmbeddMapUnits->execute(parentA.numRow(), parentA.numColumn(), random);
     EmbeddMap embeddMap(parentA.numRow(), parentA.numColumn());
 
@@ -29,7 +28,5 @@ GridGraph BlockCrossover::execute(const GridGraph& parentA, const GridGraph& par
 
     LocalSearch localSearch;
     localSearch.partialGraphOptimize(child, embeddMap.borderNeighborMap(2));
-
-    fillEmptyPort(child, random);
     return child;
 }

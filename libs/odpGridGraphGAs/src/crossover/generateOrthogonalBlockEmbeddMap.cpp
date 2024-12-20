@@ -8,7 +8,6 @@ vector<EmbeddMap> GenerateOrthogonalBlockEmbeddMapUnits::execute(int numGraphRow
     vector<int> divisionRows    = decideDevidePositions(numGraphRow,    random);
     vector<int> divisionColumns = decideDevidePositions(numGraphColumn, random);
 
-    int numGraphNode  = numGraphRow * numGraphColumn;
     int numUnitRow    = divisionRows.size()    - 1;
     int numUnitColumn = divisionColumns.size() - 1;
     int numUnit       = numUnitRow * numUnitColumn;

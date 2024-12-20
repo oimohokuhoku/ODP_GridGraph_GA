@@ -8,9 +8,9 @@ using namespace Cselab23Kimura::OdpGridGraphs;
 using namespace Cselab23Kimura::OdpGridGraphs::GA;
 using std::vector;
 
-bool select_without_replacement() {
+bool get_dummy_diameter_and_dummy_aspl() {
     constexpr int population = 5;
-    RandomInitialize randomGraphGenerate;
+    RandomInitialize randomGraphGenerate(Grid(5, 5, 4, 2));
     std::mt19937 mt(42);
 
     Group group = randomGraphGenerate.genearteInitialGroup(population, mt);
@@ -33,9 +33,8 @@ bool select_without_replacement() {
 
 int main(void) {
     bool success = true;
-    GridGraph::setDefaultGraphCondition(5, 5, 4, 2);
 
-    success &= select_without_replacement();
+    success &= get_dummy_diameter_and_dummy_aspl();
 
     if(success) return EXIT_SUCCESS;
     else        return EXIT_FAILURE;

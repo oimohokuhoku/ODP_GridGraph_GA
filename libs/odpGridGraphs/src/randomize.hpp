@@ -8,11 +8,11 @@ namespace Cselab23Kimura::OdpGridGraphs {
     class Randomize {
     public:
         Randomize() = default;
-        void operator()(GridGraph &indiv, std::mt19937& random, bool allowDislinkedGraph = false);
+        void operator()(GridGraph &graph, std::mt19937& random, bool allowDislinkedGraph = false);
 
     private:
-        void connectNeighborNodes(GridGraph &indiv);
-        void shaffleEdge(GridGraph &indiv, std::mt19937& random);
-        void modifyToLinkedGraph(GridGraph &indiv, std::mt19937& random);
+        void connectNeighborNodes(GridGraph &graph);
+        void shaffleEdge(GridGraph &graph, std::mt19937& random);
+        void modifyToLinkedGraph(GridGraph &graph, std::mt19937& random);
     };
 }

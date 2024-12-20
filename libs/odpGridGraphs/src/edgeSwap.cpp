@@ -30,7 +30,7 @@ void EdgeSwap::swap(GridGraph& graph, int startNodeIndex, std::mt19937& rand) {
 
 vector<int> EdgeSwap::selectSwappedEdgeTour(const GridGraph& graph, int startNode, mt19937& rand) {
     std::vector<int> stack(_numSwappedEdge * 2);
-    Grid grid(graph);
+    Grid grid = graph.grid();
     int stackSize = 0;
     std::vector<bool> passed(graph.numNode(), false); 
 
@@ -55,7 +55,7 @@ bool EdgeSwap::selectSwappedEdgeTourBFS(const GridGraph& graph, const Grid& grid
 
     if(stackSize % 2 == 0) {
         //辺の有無にかかわらずstartNodeと近い頂点を探索
-        vector<int> nearNode = grid.selectNearNode(startNode);
+        vector<int> nearNode = grid.selectConnectableNodes(startNode);
         std::shuffle(nearNode.begin(), nearNode.end(), rand);
         for(int nextNode: nearNode) {
             if(passed[nextNode]) continue;

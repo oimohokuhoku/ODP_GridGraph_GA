@@ -36,11 +36,11 @@ GridGraph BlockCrossoverWithDMSXf::execute(const GridGraph& parentA, const GridG
     vector<bool> appliedUnit(embeddMapUnits.size(), false);
     EmbeddMap currentEmbeddMap(startParent->numRow(), startParent->numColumn());
 
-    GridGraph bestIndiv;
-    GridGraph currentIndiv;
+    GridGraph bestIndiv(parentA.grid());
+    GridGraph currentIndiv(parentA.grid());
 
     for(size_t step = 0; step < embeddMapUnits.size() - 1; ++step) {
-        GridGraph bestNextIndiv;
+        GridGraph bestNextIndiv(parentA.grid());
         int bestUnit = -1;
 
         for(int unitIndex = 0; unitIndex < embeddMapUnits.size(); ++unitIndex) {
@@ -48,7 +48,6 @@ GridGraph BlockCrossoverWithDMSXf::execute(const GridGraph& parentA, const GridG
 
             EmbeddMap nextEmbeddMap = currentEmbeddMap.overlay(embeddMapUnits[unitIndex]);
             GridGraph nextIndiv    = embeddPartialGraph(*startParent, *endParent, nextEmbeddMap, random);
-            nextIndiv.evaluate();
             
             if(unitIndex == 0 || nextIndiv.betterThan(bestNextIndiv)) {
                 bestNextIndiv = std::move(nextIndiv);

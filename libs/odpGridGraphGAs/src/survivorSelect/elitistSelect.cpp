@@ -10,20 +10,20 @@ Group ElitistSelect::moveSurvivors(Group& childs, Group& parents, std::mt19937& 
     constexpr int PARENTS_GROUP = 1;
     int selectedGroup = CHILDS_GROUP;
     int selectedIndex = 0;
-    GridGraph& elitist = childs[0];
+    GridGraph& elitist = *childs[0];
 
     for(int i = 1; i < childs.population(); ++i) {
-        if(childs[i].betterThan(elitist)) {
+        if(childs[i]->betterThan(elitist)) {
             selectedGroup = CHILDS_GROUP;
             selectedIndex = i;
-            elitist = childs[i];
+            elitist = *childs[i];
         }
     }
     for(int i = 0; i < parents.population(); ++i) {
-        if(parents[i].betterThan(elitist)) {
+        if(parents[i]->betterThan(elitist)) {
             selectedGroup = PARENTS_GROUP;
             selectedIndex = i;
-            elitist = parents[i];
+            elitist = *parents[i];
         }
     }
 

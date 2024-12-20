@@ -24,7 +24,6 @@ Group NeighborInitialize::genearteInitialGroup(int population, std::mt19937& ran
         }
 
         totalNumDiffEdge += countDiffEdge.count(indiv, startIndiv);
-        indiv.evaluate();
         
         initialGroup[i] = std::move(indiv);
     }

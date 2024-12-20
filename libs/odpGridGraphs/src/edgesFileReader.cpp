@@ -17,26 +17,25 @@ GridGraph EdgesFileReader::read(const string& filepath) {
     int degree    = calcDegree(edges, numColumn, numRow);
     int length    = calcMaxLength(edges);
 
-    GridGraph indiv(numRow, numColumn, degree, length);
-    indiv.clear();
+    Grid grid(numRow, numColumn, degree, length);
+    GridGraph graph(grid);
+    graph.clear();
 
     for(int i = 0; i < edges.size(); ++i) {
-        int columnA = edges[i][0];
-        int rowA    = edges[i][1];
-        int columnB = edges[i][2];
-        int rowB    = edges[i][3];
+        int rowA    = edges[i][0];
+        int columnA = edges[i][1];
+        int rowB    = edges[i][2];
+        int columnB = edges[i][3];
 
-        int nodeA = (rowA * numColumn) + columnA;
-        int nodeB = (rowB * numColumn) + columnB;
+        int nodeA = grid.toNodeIndex(rowA, columnA);
+        int nodeB = grid.toNodeIndex(rowB, columnB);
 
         if(nodeA == nodeB) continue;
-        if(indiv.haveEdge(nodeA, nodeB)) continue;
+        if(graph.haveEdge(nodeA, nodeB)) continue;
 
-        indiv.addEdge(nodeA, nodeB);
+        graph.addEdge(nodeA, nodeB);
     }
-
-    indiv.evaluate();
-    return indiv;
+    return graph;
 }
 
 int EdgesFileReader::countLine(std::ifstream& ifs) {
@@ -76,31 +75,32 @@ vector<vector<int>> EdgesFileReader::readEdges(const string& filepath) {
     return edges;
 }
 
-int EdgesFileReader::calcNumColumn(const vector<vector<int>>& edges) {
-    int maxColumn = 0;
-    for(int i = 0; i < edges.size(); ++i) {
-        if(maxColumn < edges[i][0]) maxColumn = edges[i][0];
-        if(maxColumn < edges[i][2]) maxColumn = edges[i][2];
-    }
-    return maxColumn + 1;
-}
-
 int EdgesFileReader::calcNumRow(const vector<vector<int>>& edges) {
     int maxRow = 0;
     for(int i = 0; i < edges.size(); ++i) {
-        if(maxRow < edges[i][1]) maxRow = edges[i][1];
-        if(maxRow < edges[i][3]) maxRow = edges[i][3];
+        if(maxRow < edges[i][0]) maxRow = edges[i][0];
+        if(maxRow < edges[i][2]) maxRow = edges[i][2];
     }
     return maxRow + 1;
+}
+
+int EdgesFileReader::calcNumColumn(const vector<vector<int>>& edges) {
+    int maxColumn = 0;
+    for(int i = 0; i < edges.size(); ++i) {
+        if(maxColumn < edges[i][1]) maxColumn = edges[i][1];
+        if(maxColumn < edges[i][3]) maxColumn = edges[i][3];
+    }
+    return maxColumn + 1;
 }
 
 int EdgesFileReader::calcDegree(const vector<vector<int>>& edges, int numRow, int numColumn) {
     vector<vector<int>> degree(numRow, vector<int>(numColumn, 0));
     for(int i = 0; i < edges.size(); ++i) {
-        int columnA = edges[i][0];
-        int rowA    = edges[i][1];
-        int columnB = edges[i][2];
-        int rowB    = edges[i][3];
+        int rowA    = edges[i][0];
+        int columnA = edges[i][1];
+        int rowB    = edges[i][2];
+        int columnB = edges[i][3];
+        
         degree[columnA][rowA]++;
         degree[columnB][rowB]++;
     }
@@ -118,10 +118,10 @@ int EdgesFileReader::calcDegree(const vector<vector<int>>& edges, int numRow, in
 int EdgesFileReader::calcMaxLength(const vector<vector<int>>& edges) {
     int maxLength = 0;
     for(int i = 0; i < edges.size(); ++i) {
-        int columnA = edges[i][0];
-        int rowA    = edges[i][1];
-        int columnB = edges[i][2];
-        int rowB    = edges[i][3];
+        int rowA    = edges[i][0];
+        int columnA = edges[i][1];
+        int rowB    = edges[i][2];
+        int columnB = edges[i][3];
         int dColumn = std::abs(columnA - columnB);
         int dRow    = std::abs(rowA - rowB);
 

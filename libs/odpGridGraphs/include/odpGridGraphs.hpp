@@ -12,3 +12,5 @@
 #include "../src/randomize.hpp"
 #include "../src/removeExtraEdge.hpp"
 #include "../src/twoChange.hpp"
+
+#include "../src/tests/girdGraphForTest.hpp"

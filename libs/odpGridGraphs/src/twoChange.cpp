@@ -23,8 +23,8 @@ void TwoChange::operator() (GridGraph& graph, int node, std::mt19937& random) {
 
 /// @brief 辺[node1-node2]を含む2-changeの適用
 void TwoChange::operator() (GridGraph& graph, int nodeA1, int nodeA2, std::mt19937& random) {
-    Grid grid(graph);
-    std::vector<int> nearNodesA1 = grid.selectNearNode(nodeA1);
+    Grid grid = graph.grid();
+    std::vector<int> nearNodesA1 = grid.selectConnectableNodes(nodeA1);
     std::shuffle(nearNodesA1.begin(), nearNodesA1.end(), random);
 
     for(int i = 0; i < nearNodesA1.size(); ++i) {
@@ -60,7 +60,7 @@ void TwoChange::operator() (GridGraph& graph, int nodeA1, int nodeA2, int nodeB1
 
 /// @brief [For Debug] 2-changeが適用できない辺が選択されたときに警告して終了.
 void TwoChange::tryTwoChange(GridGraph& graph, int nodeA1, int nodeA2, int nodeB1, int nodeB2) {
-    Grid grid(graph);
+    Grid grid = graph.grid();
     if(nodeA1 == nodeB1 && nodeA2 == nodeB2) {
         std::cerr << "TwoChange: Edge is duplicated(" << nodeA1 << "-" << nodeA2 << ", " << nodeB1 << "-" << nodeB2 << ")" << std::endl;
         graph.showGraph();

@@ -9,13 +9,13 @@ namespace Cselab23Kimura::OdpGridGraphs {
     {
     public:
         LocalSearch();
-        void localOptimize(GridGraph &indiv);
-        void partialGraphOptimize(GridGraph &indiv, const std::vector<bool> &targetNodes);
+        void localOptimize(GridGraph &graph);
+        void partialGraphOptimize(GridGraph &graph, const std::vector<bool> &targetNodes);
         inline int numEvaluate() { return _numEvaluate; }
 
     private:
         int _numEvaluate;
-        bool exhaustiveTwoChange(GridGraph &indiv);
-        bool partialExhaustiveTwoChange(GridGraph &indiv, const std::vector<bool> &targetNodes);
+        bool exhaustiveTwoChange(GridGraph &graph);
+        bool partialExhaustiveTwoChange(GridGraph &graph, const std::vector<bool> &targetNodes);
     };
 }

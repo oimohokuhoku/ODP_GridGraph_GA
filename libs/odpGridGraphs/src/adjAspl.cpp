@@ -7,14 +7,14 @@
 #include "grid.hpp"
 using namespace Cselab23Kimura::OdpGridGraphs;
 
-void AdjAspl::operator() (GridGraph& indiv) {
+void AdjAspl::operator() (const GridGraph& graph) {
 	//高速化のために関数を分離せずにべた書きしてます.
 	//アルゴリズムはこちらを参照(http://research.nii.ac.jp/graphgolf/2019/candar19/graphgolf2019-nakao.pdf).
 
 	//int64を無理やりbit列として扱って計算量を削減している.
 	//"a = 128" なら "a = 0000...0010000000" として考える.
 
-	int numNode = indiv.numNode();
+	int numNode = graph.numNode();
     int numSegment = (numNode + (_BIT_LENGTH - 1)) / _BIT_LENGTH;
 	int numMatrixBit = numNode * numNode;
 	int64_t** A     = newIdentityMatrix(numNode, numSegment);
@@ -25,8 +25,8 @@ void AdjAspl::operator() (GridGraph& indiv) {
 	while(k < numNode) {
 		//行列Aを更新
 		for(int node = 0; node < numNode; ++node) {
-			for(int d = 0; d < indiv.nodeDegrees[node]; ++d) {
-				int adjNode = indiv.adjacent[node][d];
+			for(int d = 0; d < graph.nodeDegrees[node]; ++d) {
+				int adjNode = graph.adjacent[node][d];
 				for(int seg = 0; seg < numSegment; ++seg)
 					nextA[node][seg] |= A[adjNode][seg];
 			}
