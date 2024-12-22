@@ -1,4 +1,3 @@
-#include "../src/gaConfiguration.hpp"
 #include "../src/gaCsvRecorder.hpp"
 #include "../src/gaParameterTable.hpp"
 #include "../src/geneticAlgorithm.hpp"

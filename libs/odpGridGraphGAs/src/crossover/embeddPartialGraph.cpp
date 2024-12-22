@@ -13,7 +13,7 @@ using namespace Cselab23Kimura::OdpGridGraphs::GA::Crossovers;
 GridGraph EmbeddPartialGraph::operator() (const GridGraph& indiv0, const GridGraph& indiv1, const EmbeddMap& embeddMap, std::mt19937& random) {
     FillEmptyPortRandomly fillEmptyPort;
     GridGraph newIndiv(indiv0.grid());
-    newIndiv.clear();
+    newIndiv.clearEdges();
 
     inheritEdgesWithEmbeddMap(newIndiv, indiv0, indiv1, embeddMap);
     inheritShareEdges(newIndiv, indiv0, indiv1);
@@ -29,8 +29,8 @@ void EmbeddPartialGraph::inheritEdgesWithEmbeddMap(GridGraph& newIndiv, const Gr
         if(embeddMap.at(node)) srcIndiv = &indiv0;
         else                srcIndiv = &indiv1;
 
-        for(int d = 0; d < srcIndiv->nodeDegrees[node]; ++d) {
-            int adjNode = srcIndiv->adjacent[node][d];
+        for(int d = 0; d < srcIndiv->nodeDegree(node); ++d) {
+            int adjNode = srcIndiv->adjacent(node, d);
 
             if(node == adjNode) continue;
             if(newIndiv.haveEdge(node, adjNode))      continue;
@@ -43,8 +43,8 @@ void EmbeddPartialGraph::inheritEdgesWithEmbeddMap(GridGraph& newIndiv, const Gr
 
 void EmbeddPartialGraph::inheritShareEdges(GridGraph& newIndiv, const GridGraph& indivA, const GridGraph& indivB) {
     for(int nodeA0 = 0; nodeA0 < indivA.numNode(); ++nodeA0) {
-        for(int d = 0; d < indivA.nodeDegrees[nodeA0]; ++d) {
-            int nodeA1 = indivA.adjacent[nodeA0][d];
+        for(int d = 0; d < indivA.nodeDegree(nodeA0); ++d) {
+            int nodeA1 = indivA.adjacent(nodeA0, d);
             if(nodeA0 == nodeA1 /*Loop egde*/)    continue;
             if(!indivB.haveEdge(nodeA0, nodeA1))  continue; //共有辺でない
             if(newIndiv.haveEdge(nodeA0, nodeA1)) continue;
@@ -55,10 +55,10 @@ void EmbeddPartialGraph::inheritShareEdges(GridGraph& newIndiv, const GridGraph&
 
 void EmbeddPartialGraph::inheritRandomEdges(GridGraph& newIndiv, const GridGraph& indiv0, const GridGraph& indiv1, std::mt19937& random) {
     std::vector<int> nodeSequence(newIndiv.numNode());
-    for(int i = 0; i < nodeSequence.size(); ++i) nodeSequence[i] = i;
+    for(size_t i = 0; i < nodeSequence.size(); ++i) nodeSequence[i] = i;
     std::shuffle(nodeSequence.begin(), nodeSequence.end(), random);
 
-    for(int i = 0; i < nodeSequence.size(); ++i) {
+    for(size_t i = 0; i < nodeSequence.size(); ++i) {
         int node = nodeSequence[i];
         if(newIndiv.fullDegree(node)) continue;
 
@@ -66,8 +66,8 @@ void EmbeddPartialGraph::inheritRandomEdges(GridGraph& newIndiv, const GridGraph
         if(random() % 100 < 50) srcIndiv = &indiv0;
         else                    srcIndiv = &indiv1;
 
-        for(int d = 0; d < srcIndiv->nodeDegrees[node]; ++d) {
-            int adjNode = srcIndiv->adjacent[node][d];
+        for(int d = 0; d < srcIndiv->nodeDegree(node); ++d) {
+            int adjNode = srcIndiv->adjacent(node, d);
             if(node == adjNode /*Loop egde*/)    continue;
             if(newIndiv.fullDegree(adjNode))     continue;
             if(newIndiv.haveEdge(node, adjNode)) continue;

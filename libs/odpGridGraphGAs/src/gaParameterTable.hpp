@@ -2,13 +2,13 @@
 
 namespace Cselab23Kimura::OdpGridGraphs::GA
 {
-    class GeneticAlgorithm;
+    class Group;
 
-    class GAParameterTable {
+    class GaParameterTable {
     public:
-        GAParameterTable();
+        GaParameterTable();
         void showHedder() const;
-        void showParameter(const GeneticAlgorithm &ga) const;
+        void showRow(int generation, const Group &group) const;
 
     private:
         int _stepWidth;

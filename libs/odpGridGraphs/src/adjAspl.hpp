@@ -4,22 +4,31 @@
 namespace Cselab23Kimura::OdpGridGraphs {
     class GridGraph;
 
-    /// @brief ADJ-ASPLによる評価計算(参考 : http://research.nii.ac.jp/graphgolf/2019/candar19/graphgolf2019-nakao.pdf)
+    /// @brief Computer of diameter of ASPL.
+    /// @note Refererence: 
+    /// Masahiro Nakao, Maaki Sakai, Yoshiko Hanada,
+    /// "Introduction of fast APSP algorithm and optimization algorithms for grid graphs",
+    /// Graph Golf Workshop in CANDAR'19, 2019-11-26
     class AdjAspl {
+    /* static */
     public:
-        AdjAspl() = default;
-        void operator()(const GridGraph &graph);
-        inline int diameter() const { return _diameter; }
-        inline double aspl()  const { return _aspl; }
-        inline int dislinkedNode() { return _dislinkedNode; }
-
+        static AdjAspl computeDiameterAndAspl(int numNode, int const *const *const adjacent, int const *const nodeDegrees);
     private:
-        const int _BIT_LENGTH = 64;
-        int _diameter;
-        double _aspl;
-        int _dislinkedNode = -1;
-
-        int64_t **newIdentityMatrix(int numNode, int numSegment);
-        int findDislinkedNode(int64_t **matrix, int numSegment);
+        constexpr static int _BIT_LENGTH = 64;
+        static inline int64_t **newIdentityMatrix(int numNode, int numSegment);
+        static inline int findDislinkedNode(int64_t **matrix, int numSegment);
+        
+    /* instance */
+    public:
+        inline int diameter() const noexcept { return _diameter; }
+        inline double aspl()  const noexcept { return _aspl; }
+        inline int dislinkedNode()  const noexcept { return _dislinkedNode; }
+        inline bool isDislinked()   const noexcept { return _dislinkedNode != -1; }
+        inline bool isLinkedGraph() const noexcept { return _dislinkedNode == -1; }
+    private:
+        const int _diameter;
+        const double _aspl;
+        const int _dislinkedNode = -1;
+        AdjAspl(int diameter, double aspl, int dislinkedNode);
     };
 }

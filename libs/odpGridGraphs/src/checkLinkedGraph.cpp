@@ -1,5 +1,4 @@
 #include "checkLinkedGraph.hpp"
-
 #include <iostream>
 #include <vector>
 #include "gridGraph.hpp"
@@ -7,10 +6,12 @@
 using namespace Cselab23Kimura::OdpGridGraphs;
 using std::vector;
 
-/// @brief ノード[0]とつながっていない頂点を探索
-/// @return 連結グラフであれば-1を返す
+/// @brief Checks if all nodes in the graph are connected to node[0].
+/// @param graph The GridGraph object to be checked.
+/// @return Returns true if the graph is fully connected, otherwise returns false.
+/// @details complexity is O(V + E) where V is the number of nodes and E is the number of edges.
 bool CheckLinkedGraph::checkLinked(const GridGraph& graph) {
-    // BFSで探索
+    // BFS
     Collections::Queue<int> queue(graph.numNode());
 
     vector<bool> visited(graph.numNode(), false);
@@ -22,8 +23,8 @@ bool CheckLinkedGraph::checkLinked(const GridGraph& graph) {
 
     while(!queue.empty()) {
         int currentNode = queue.dequeue();
-        for(int d = 0; d < graph.nodeDegrees[currentNode]; ++d) {
-            int nextNode = graph.adjacent[currentNode][d];
+        for(int d = 0; d < graph.nodeDegree(currentNode); ++d) {
+            int nextNode = graph.adjacent(currentNode, d);
             if(visited[nextNode]) continue;
 
             queue.enqueue(nextNode);
@@ -44,6 +45,5 @@ bool CheckLinkedGraph::checkLinked(const GridGraph& graph) {
         }
     }
 
-    std::cerr << "CkechLinkedGraph::findDislinkedNode(GridGraph): Failure in inplementation." << std::endl;
-    exit(EXIT_FAILURE);
+    throw std::logic_error("Unexpected Error");
 }

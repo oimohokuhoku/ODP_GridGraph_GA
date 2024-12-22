@@ -31,11 +31,9 @@ bool only_one_individual_has_been_moved() {
 
     int movedCount = 0;
     for(int i = 0; i < parents.population(); ++i) {
-        std::cout << parents[i]->adjacent << std::endl;
         if(!parents[i].has_value()) movedCount++;
     }
     for(int i = 0; i < childs.population(); ++i) {
-        std::cout << childs[i]->adjacent << std::endl;
         if(!childs[i].has_value()) movedCount++;
     }
     unitTest.assertEqualInt("count of moved individual", 1, movedCount);
@@ -119,7 +117,7 @@ bool select_from_group_including_null() {
         dummy = std::move(*childs[0]);
 
         Group survivor = select.moveSurvivors(childs, parents, mt);
-        if(survivor[0]->adjacent == nullptr) {
+        if(survivor[0]->isValidObject()) {
             selectNull = true;
             break;
         }

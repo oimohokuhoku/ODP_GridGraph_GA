@@ -8,22 +8,22 @@ using namespace Cselab23Kimura::OdpGridGraphs::GA;
 using std::optional;
 
 /* public */
-Group::Group(int size) : 
-	_population(size),
-	_indivs(new optional<GridGraph>[size]),
-	_bestIndivIndex(_UNCALCULATED),
-	_worstIndivIndex(_UNCALCULATED),
-	_averageDiameter(_UNCALCULATED),
-	_averageAspl(_UNCALCULATED),
-	_indivVariation(_UNCALCULATED)
+Group::Group(int population) : 
+	_population(population),
+	_indivs(new optional<GridGraph>[population]),
+	_bestIndivIndexCache(_UNCALCULATED),
+	_worstIndivIndexCache(_UNCALCULATED),
+	_averageDiameterCache(_UNCALCULATED),
+	_averageAsplCache(_UNCALCULATED),
+	_indivVariationCache(_UNCALCULATED) 
 {
-	for(int i = 0; i < size; ++i) {
-		_indivs[i] = std::nullopt;
-	}
+	for(int i = 0; i < population; ++i) _indivs[i] = std::nullopt;
 }
 
-Group::Group(const Group& obj): _population(obj._population) {
-	_indivs = new optional<GridGraph>[_population];
+Group::Group(const Group& obj) : 
+	_population(obj._population),
+	_indivs(new optional<GridGraph>[obj._population])
+{
 	*this = obj;
 }
 
@@ -39,107 +39,104 @@ Group::~Group() {
 }
 
 Group& Group::operator=(const Group& rhs) {
-	if(this->_population != rhs._population) {
-		std::cerr << "Cannot substitute group with difference population" << std::endl;
-		exit(EXIT_FAILURE);
-	}
+	if(this->_population != rhs._population) throw std::invalid_argument("Cannot substitute group with difference population");
 
 	for(int i = 0; i < this->_population; ++i) {
 		this->_indivs[i] = rhs._indivs[i];
 	}
-
-	this->_bestIndivIndex  = rhs._bestIndivIndex;
-	this->_worstIndivIndex = rhs._worstIndivIndex;
-	this->_averageDiameter = rhs._averageDiameter;
-	this->_averageAspl     = rhs._averageAspl;
-	this->_indivVariation  = rhs._indivVariation;
+	this->_bestIndivIndexCache  = rhs._bestIndivIndexCache;
+	this->_worstIndivIndexCache = rhs._worstIndivIndexCache;
+	this->_averageDiameterCache = rhs._averageDiameterCache;
+	this->_averageAsplCache     = rhs._averageAsplCache;
+	this->_indivVariationCache  = rhs._indivVariationCache;
 	
 	return *this;
 }
 
 Group& Group::operator=(Group&& rhs) {
-	if(this->_population != rhs._population) {
-		std::cerr << "Cannot substitute group with difference population" << std::endl;
-		exit(EXIT_FAILURE);
-	}
+	if(this->_population != rhs._population) throw std::invalid_argument("Cannot substitute group with difference population");
 
 	this->_indivs          = rhs._indivs;
-	this->_bestIndivIndex  = rhs._bestIndivIndex;
-	this->_worstIndivIndex = rhs._worstIndivIndex;
-	this->_averageDiameter = rhs._averageDiameter;
-	this->_averageAspl     = rhs._averageAspl;
-	this->_indivVariation  = rhs._indivVariation;
+	this->_bestIndivIndexCache  = rhs._bestIndivIndexCache;
+	this->_worstIndivIndexCache = rhs._worstIndivIndexCache;
+	this->_averageDiameterCache = rhs._averageDiameterCache;
+	this->_averageAsplCache     = rhs._averageAsplCache;
+	this->_indivVariationCache  = rhs._indivVariationCache;
 
 	rhs._indivs = nullptr;
 
 	return *this;
 }
 
-std::optional<GridGraph>& Group::operator[](int index) {
-	_bestIndivIndex  = _UNCALCULATED;
-	_worstIndivIndex = _UNCALCULATED;
-	_averageAspl     = _UNCALCULATED;
-	_averageDiameter = _UNCALCULATED;
-	_indivVariation  = _UNCALCULATED;
+optional<GridGraph>& Group::operator[](int index) {
+	if(index < 0 || _population <= index) throw std::out_of_range("Index out of range");
 
-	if(_indivs[index].has_value() && _indivs[index]->adjacent == nullptr) {
-		_indivs[index] = std::nullopt;
+	// If _indivs[index] is empty object for std::move()
+	if(_indivs[index].has_value()) {
+		if(!_indivs[index]->isValidObject()) _indivs[index] = std::nullopt;
 	}
-
+	
+	this->_bestIndivIndexCache  = _UNCALCULATED;
+	this->_worstIndivIndexCache = _UNCALCULATED;
+	this->_averageDiameterCache = _UNCALCULATED;
+	this->_averageAsplCache     = _UNCALCULATED;
+	this->_indivVariationCache  = _UNCALCULATED;
 	return _indivs[index];
 }
 
 const std::optional<GridGraph>& Group::operator[](int index) const {
-	if(!_indivs[index]) {
-		std::cerr << "Group[" << index << "] is empty object." << std::endl;
-		exit(EXIT_FAILURE);
-	}
-
-	if(_indivs[index].has_value() && _indivs[index]->adjacent == nullptr) {
-		_indivs[index] = std::nullopt;
-	}
+	if(index < 0 || _population <= index) throw std::out_of_range("Index out of range");
+	if(!_indivs[index]) throw std::invalid_argument("Group[" + std::to_string(index) + "] is empty object.");
 	
 	return _indivs[index];
 }
 
+std::optional<GridGraph>& Group::get(int index) {
+	return (*this)[index];
+}
+
+const std::optional<GridGraph>& Group::get(int index) const {
+	return (*this)[index];
+}
+
 const GridGraph& Group::bestIndiv() const {
-	if(_bestIndivIndex == _UNCALCULATED) _bestIndivIndex = findBestIndivIndex();
-	return *(_indivs[_bestIndivIndex]);
+	if(_bestIndivIndexCache == _UNCALCULATED) _bestIndivIndexCache = findBestIndivIndex();
+	return *(_indivs[_bestIndivIndexCache]);
 }
 
 int Group::bestDiameter() const {
-	if(_bestIndivIndex == _UNCALCULATED) _bestIndivIndex = findBestIndivIndex();
-	return _indivs[_bestIndivIndex]->diameter();
+	if(_bestIndivIndexCache == _UNCALCULATED) _bestIndivIndexCache = findBestIndivIndex();
+	return _indivs[_bestIndivIndexCache]->computeDiameter();
 }
 
 int Group::worstDiameter() const {
-	if(_worstIndivIndex == _UNCALCULATED) _worstIndivIndex = findWorstIndivIndex();
-	return _indivs[_worstIndivIndex]->diameter();
+	if(_worstIndivIndexCache == _UNCALCULATED) _worstIndivIndexCache = findWorstIndivIndex();
+	return _indivs[_worstIndivIndexCache]->computeDiameter();
 }
 
 double Group::averageDiameter() const {
-	if(_averageDiameter == _UNCALCULATED) _averageDiameter = calcAverageDiameter();
-	return _averageDiameter;
+	if(_averageDiameterCache == _UNCALCULATED) _averageDiameterCache = calcAverageDiameter();
+	return _averageDiameterCache;
 }
 
 double Group::bestAspl() const {
-	if(_bestIndivIndex == _UNCALCULATED) _bestIndivIndex = findBestIndivIndex();
-	return _indivs[_bestIndivIndex]->aspl();
+	if(_bestIndivIndexCache == _UNCALCULATED) _bestIndivIndexCache = findBestIndivIndex();
+	return _indivs[_bestIndivIndexCache]->computeAspl();
 }
 
 double Group::worstAspl() const {
-	if(_worstIndivIndex == _UNCALCULATED) _worstIndivIndex = findWorstIndivIndex();
-	return _indivs[_worstIndivIndex]->aspl();
+	if(_worstIndivIndexCache == _UNCALCULATED) _worstIndivIndexCache = findWorstIndivIndex();
+	return _indivs[_worstIndivIndexCache]->computeAspl();
 }
 
 double Group::averageAspl() const {
-	if(_averageAspl == _UNCALCULATED) _averageAspl = calcAverageAspl();
-	return _averageAspl;
+	if(_averageAsplCache == _UNCALCULATED) _averageAsplCache = calcAverageAspl();
+	return _averageAsplCache;
 }
 
 int Group::indivVariation() const {
-	if(_indivVariation == _UNCALCULATED) _indivVariation = countIndivVariation();
-	return _indivVariation;
+	if(_indivVariationCache == _UNCALCULATED) _indivVariationCache = countIndivVariation();
+	return _indivVariationCache;
 }
 
 /* private */
@@ -195,7 +192,7 @@ double Group::calcAverageAspl() const {
 	int numIndiv = 0;
 	for(int i = 0; i < this->population(); ++i) {
 		if(!_indivs[i]) continue;
-		sumAspl += _indivs[i]->aspl();
+		sumAspl += _indivs[i]->computeAspl();
 		numIndiv++;
 	}
 	return sumAspl / static_cast<double>(numIndiv);
@@ -206,7 +203,7 @@ double Group::calcAverageDiameter() const {
 	int numIndiv = 0;
 	for(int i = 0; i < this->population(); ++i) {
 		if(!_indivs[i]) continue;
-		sumDiam += _indivs[i]->diameter();
+		sumDiam += _indivs[i]->computeDiameter();
 		numIndiv++;
 	}
 	return static_cast<double>(sumDiam) / static_cast<double>(numIndiv);

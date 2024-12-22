@@ -1,5 +1,4 @@
 #pragma once
-
 //FIXME: void decideSequence(Group)をファクトリメソッドに切り出し
 
 namespace Cselab23Kimura::OdpGridGraphs::GA 

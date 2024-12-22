@@ -28,16 +28,16 @@ bool LocalSearch::exhaustiveTwoChange(GridGraph& graph) {
     bool refine = false;
 
     for(int nodeA0 = 0; nodeA0 < graph.numNode(); ++nodeA0) {
-        for(int dA = 0; dA < graph.nodeDegrees[nodeA0]; ++dA) {
-            int nodeA1 = graph.adjacent[nodeA0][dA];
+        for(int dA = 0; dA < graph.nodeDegree(nodeA0); ++dA) {
+            int nodeA1 = graph.adjacent(nodeA0, dA);
 
             vector<int> nearNodesA0 = grid.selectConnectableNodes(nodeA0);
-            for(int i = 0; i < nearNodesA0.size(); ++i) {
+            for(size_t i = 0; i < nearNodesA0.size(); ++i) {
                 int nodeB0 = nearNodesA0[i];
                 bool exchanged = false;
 
-                for(int dB = 0; dB < graph.nodeDegrees[nodeB0]; ++dB) {
-                    int nodeB1 = graph.adjacent[nodeB0][dB];
+                for(int dB = 0; dB < graph.nodeDegree(nodeB0); ++dB) {
+                    int nodeB1 = graph.adjacent(nodeB0, dB);
                     
                     if(nodeA0 == nodeB0 && nodeA1 == nodeB1) continue;
                     if(nodeA0 == nodeB1 && nodeA1 == nodeB0) continue;
@@ -50,7 +50,6 @@ bool LocalSearch::exhaustiveTwoChange(GridGraph& graph) {
 
                     if(newGraph.betterThan(graph)) {
                         //TODO: LS改善回数の記録
-                        //MetaObserver::incrementNumRefineInLS();
                         graph = std::move(newGraph);
                         refine = true;
                         exchanged = true;
@@ -85,16 +84,16 @@ bool LocalSearch::partialExhaustiveTwoChange(GridGraph& graph, const vector<bool
     for(int nodeA0 = 0; nodeA0 < graph.numNode(); ++nodeA0) {
         if(!targetNodes[nodeA0]) continue;
 
-        for(int dA = 0; dA < graph.nodeDegrees[nodeA0]; ++dA) {
-            int nodeA1 = graph.adjacent[nodeA0][dA];
+        for(int dA = 0; dA < graph.nodeDegree(nodeA0); ++dA) {
+            int nodeA1 = graph.adjacent(nodeA0, dA);
 
             vector<int> nearNodesA0 = grid.selectConnectableNodes(nodeA0);
-            for(int i = 0; i < nearNodesA0.size(); ++i) {
+            for(size_t i = 0; i < nearNodesA0.size(); ++i) {
                 int nodeB0 = nearNodesA0[i];
                 bool exchanged = false;
 
-                for(int dB = 0; dB < graph.nodeDegrees[nodeB0]; ++dB) {
-                    int nodeB1 = graph.adjacent[nodeB0][dB];
+                for(int dB = 0; dB < graph.nodeDegree(nodeB0); ++dB) {
+                    int nodeB1 = graph.adjacent(nodeB0, dB);
                     
                     if(nodeA0 == nodeB0 && nodeA1 == nodeB1) continue;
                     if(nodeA0 == nodeB1 && nodeA1 == nodeB0) continue;

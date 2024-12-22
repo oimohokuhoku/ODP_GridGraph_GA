@@ -15,7 +15,7 @@ bool copy_group() {
     groupA[1] = std::nullopt;
     groupA[2] = Tests::SimpleGraphGenerate::h2w2d3r2_B();
 
-    UnitTest unitTest("substitute_for_same_population_group");
+    UnitTest unitTest("copy_group");
     groupB = groupA;
     unitTest.assertTrue("object copy", groupB[0]->matchGraph(*groupA[0]));
     unitTest.assertFalse("empty copy", groupB[1].has_value());

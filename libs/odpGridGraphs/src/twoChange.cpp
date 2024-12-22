@@ -15,8 +15,8 @@ void TwoChange::operator() (GridGraph& graph, std::mt19937& random) {
 
 /// @brief 指定した頂点を含む2-changeの適用
 void TwoChange::operator() (GridGraph& graph, int node, std::mt19937& random) {
-    int d = random() % graph.nodeDegrees[node];
-    int node2 = graph.adjacent[node][d];
+    int d = random() % graph.nodeDegree(node);
+    int node2 = graph.adjacent(node, d);
     
     (*this)(graph, node, node2, random);
 }
@@ -30,10 +30,10 @@ void TwoChange::operator() (GridGraph& graph, int nodeA1, int nodeA2, std::mt199
     for(int i = 0; i < nearNodesA1.size(); ++i) {
         int nodeB1 = nearNodesA1[i];
 
-        int startDegree = random() % graph.nodeDegrees[nodeB1];
-        for(int d = 0; d < graph.nodeDegrees[nodeB1]; ++d) {
-            int degreeB2 = (startDegree + d) % graph.nodeDegrees[nodeB1];
-            int nodeB2 = graph.adjacent[nodeB1][degreeB2];
+        int startDegree = random() % graph.nodeDegree(nodeB1);
+        for(int d = 0; d < graph.nodeDegree(nodeB1); ++d) {
+            int degreeB2 = (startDegree + d) % graph.nodeDegree(nodeB1);
+            int nodeB2 = graph.adjacent(nodeB1, degreeB2);
 
             //同じ辺が選ばれたらスキップ
             if(nodeA1 == nodeB1 && nodeA2 == nodeB2) continue;
@@ -49,13 +49,17 @@ void TwoChange::operator() (GridGraph& graph, int nodeA1, int nodeA2, std::mt199
 
 /// @brief 2辺を指定して2-changeを適用. (nodeA1-nodeA2, nodeB1-nodeB2) → (nodeA1-nodeB1, nodeA2-nodeB2).
 void TwoChange::operator() (GridGraph& graph, int nodeA1, int nodeA2, int nodeB1, int nodeB2) {
+    if(nodeA1 == nodeB1 && nodeA2 == nodeB2) return;
+    if(nodeA1 == nodeB2 && nodeA2 == nodeB1) return;
+
     this->_numChangedEdges += 2;
     if(graph.haveEdge(nodeA1, nodeB1)) this->_numDuplicateEdges++;
     if(graph.haveEdge(nodeA2, nodeB2)) this->_numDuplicateEdges++;
-    graph.removeEdge(nodeA1, nodeA2);
-    graph.removeEdge(nodeB1, nodeB2);
-    graph.addEdge(nodeA1, nodeB1);
-    graph.addEdge(nodeA2, nodeB2);
+
+    graph.removeEdgeAllowingLoops(nodeA1, nodeA2);
+    graph.removeEdgeAllowingLoops(nodeB1, nodeB2);
+    graph.addEdgeAllowingLoops(nodeA1, nodeB1);
+    graph.addEdgeAllowingLoops(nodeA2, nodeB2);
 }
 
 /// @brief [For Debug] 2-changeが適用できない辺が選択されたときに警告して終了.

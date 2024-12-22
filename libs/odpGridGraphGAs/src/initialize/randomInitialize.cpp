@@ -13,7 +13,7 @@ Group RandomInitialize::genearteInitialGroup(int population, std::mt19937& rando
 
     for(int i = 0; i < population; ++i) {
         initialGroup[i] = GridGraph(_grid);
-        randomize(*(initialGroup[i]), random);
+        randomize(*initialGroup[i], random);
     }
 
     return initialGroup;

@@ -1,5 +1,4 @@
 #include "edgesFileReader.hpp"
-
 #include <iostream>
 #include <string>
 #include <fstream>
@@ -19,9 +18,8 @@ GridGraph EdgesFileReader::read(const string& filepath) {
 
     Grid grid(numRow, numColumn, degree, length);
     GridGraph graph(grid);
-    graph.clear();
 
-    for(int i = 0; i < edges.size(); ++i) {
+    for(size_t i = 0; i < edges.size(); ++i) {
         int rowA    = edges[i][0];
         int columnA = edges[i][1];
         int rowB    = edges[i][2];
@@ -77,7 +75,7 @@ vector<vector<int>> EdgesFileReader::readEdges(const string& filepath) {
 
 int EdgesFileReader::calcNumRow(const vector<vector<int>>& edges) {
     int maxRow = 0;
-    for(int i = 0; i < edges.size(); ++i) {
+    for(size_t i = 0; i < edges.size(); ++i) {
         if(maxRow < edges[i][0]) maxRow = edges[i][0];
         if(maxRow < edges[i][2]) maxRow = edges[i][2];
     }
@@ -86,7 +84,7 @@ int EdgesFileReader::calcNumRow(const vector<vector<int>>& edges) {
 
 int EdgesFileReader::calcNumColumn(const vector<vector<int>>& edges) {
     int maxColumn = 0;
-    for(int i = 0; i < edges.size(); ++i) {
+    for(size_t i = 0; i < edges.size(); ++i) {
         if(maxColumn < edges[i][1]) maxColumn = edges[i][1];
         if(maxColumn < edges[i][3]) maxColumn = edges[i][3];
     }
@@ -95,7 +93,7 @@ int EdgesFileReader::calcNumColumn(const vector<vector<int>>& edges) {
 
 int EdgesFileReader::calcDegree(const vector<vector<int>>& edges, int numRow, int numColumn) {
     vector<vector<int>> degree(numRow, vector<int>(numColumn, 0));
-    for(int i = 0; i < edges.size(); ++i) {
+    for(size_t i = 0; i < edges.size(); ++i) {
         int rowA    = edges[i][0];
         int columnA = edges[i][1];
         int rowB    = edges[i][2];
@@ -117,7 +115,7 @@ int EdgesFileReader::calcDegree(const vector<vector<int>>& edges, int numRow, in
 
 int EdgesFileReader::calcMaxLength(const vector<vector<int>>& edges) {
     int maxLength = 0;
-    for(int i = 0; i < edges.size(); ++i) {
+    for(size_t i = 0; i < edges.size(); ++i) {
         int rowA    = edges[i][0];
         int columnA = edges[i][1];
         int rowB    = edges[i][2];

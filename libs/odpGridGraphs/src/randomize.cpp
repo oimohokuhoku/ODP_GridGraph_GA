@@ -7,7 +7,7 @@ using namespace Cselab23Kimura::OdpGridGraphs;
 
 /// @brief グラフのランダム化(アルゴリズム"https://ipsj.ixsq.nii.ac.jp/ej/?action=repository_uri&item_id=203866&file_id=1&file_no=1")
 void Randomize::operator() (GridGraph& graph, std::mt19937& random, bool allowDislinkedGraph) {
-    graph.clear();
+    graph.clearEdges();
     connectNeighborNodes(graph);
     shaffleEdge(graph, random);
 
@@ -42,7 +42,7 @@ void Randomize::connectNeighborNodes(GridGraph& graph) {
     int bottomEnd = graph.numColumn() - 1;
     int cornerNode = grid.toNodeIndex(bottomEnd, rightEnd);
     for(int d = 0; d + 1 < graph.degree(); d += 2) {
-        graph.addEdge(cornerNode, cornerNode);
+        graph.addEdgeAllowingLoops(cornerNode, cornerNode);
     }
 }
 

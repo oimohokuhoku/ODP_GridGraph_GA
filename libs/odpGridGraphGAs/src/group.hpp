@@ -5,10 +5,10 @@ namespace Cselab23Kimura::OdpGridGraphs {
 	class GridGraph;
 	
 	namespace GA {
-		///@brief GridGraphオブジェクトのコレクションクラス.
+		///@brief std::optional<GridGraph>の配列を管理するコレクションクラス
 		struct Group {
 		public:
-			Group(int size);
+			Group(int population);
 			Group(const Group &obj);
 			Group(Group &&obj);
 			~Group();
@@ -18,6 +18,8 @@ namespace Cselab23Kimura::OdpGridGraphs {
 
 			std::optional<GridGraph>& operator[](int index);
 			const std::optional<GridGraph>& operator[](int index) const;
+			std::optional<GridGraph>& get(int index);
+			const std::optional<GridGraph>& get(int index) const;
 
 			const GridGraph& bestIndiv() const;
 			int bestDiameter() const;
@@ -32,13 +34,13 @@ namespace Cselab23Kimura::OdpGridGraphs {
 
 		private:
 			static constexpr int _UNCALCULATED = -1;
-			std::optional<GridGraph> *_indivs;
 			const int _population;
-			mutable int _bestIndivIndex;
-			mutable int _worstIndivIndex;
-			mutable double _averageDiameter;
-			mutable double _averageAspl;
-			mutable int _indivVariation;
+			std::optional<GridGraph> *_indivs;
+			mutable int _bestIndivIndexCache;
+			mutable int _worstIndivIndexCache;
+			mutable double _averageDiameterCache;
+			mutable double _averageAsplCache;
+			mutable int _indivVariationCache;
 
 			int findBestIndivIndex() const;
 			int findWorstIndivIndex() const;

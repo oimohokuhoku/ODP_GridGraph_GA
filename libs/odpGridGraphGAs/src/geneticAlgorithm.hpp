@@ -6,59 +6,36 @@
 #include <random>
 namespace Cselab23Kimura::OdpGridGraphs { class GridGraph; }
 
-namespace Cselab23Kimura::OdpGridGraphs::GA
-{
-    class GAConfiguration;
-    class Group;
-    class Initialize;
-    namespace CopySelects { class CopySelect; }
-    namespace Crossovers  { class Crossover; }
-    namespace Mutates     { class Mutate; }
-    namespace SurvivorSelects { class SurvivorSelect; }
+namespace Cselab23Kimura::OdpGridGraphs {
+    class GridGraph;
 
-    // GAの操作を行う. なるべくこのインスタンスのみの呼び出しのみで処理が完結するように設計
-    class GeneticAlgorithm
-    {
-    public:
-        GeneticAlgorithm(
-            const GAConfiguration &config, 
-            Initialize *const initialize,
-            std::mt19937& random
-        );
-        ~GeneticAlgorithm();
+    namespace GA {
+        class Group;
+        namespace CopySelects { class CopySelect; }
+        namespace Crossovers  { class Crossover; }
+        namespace Mutates     { class Mutate; }
+        namespace SurvivorSelects { class SurvivorSelect; }
 
-        void progressGeneration(
-            CopySelects::CopySelect *const copySelect,
-            Crossovers::Crossover *const crossover,
-            Mutates::Mutate *const mutate,
-            SurvivorSelects::SurvivorSelect *const survivorSelect,
-            std::mt19937& random
-        );
-        bool end() const;
+        class GeneticAlgorithm {
+        public:
+            GeneticAlgorithm(const Group& initialGroup);
 
-        void showParameterTableHedder() const;
-        void saveBestEverEdgeFile(const std::string &dirpath) const;
+            Group progressGeneration(
+                const Group& group,
+                CopySelects::CopySelect *const copySelect,
+                Crossovers::Crossover *const crossover,
+                Mutates::Mutate *const mutate,
+                SurvivorSelects::SurvivorSelect *const survivorSelect,
+                std::mt19937& random
+            );
+            inline int generation() const { return _generation; }
 
-        inline int generation() const { return _generation; }
-        int bestDiameter() const;
-        double bestAspl() const;
-        double averageASPL() const;
-        double worstASPL() const;
-        int indivVariation() const;
-        inline int averageDistanceFromStartGraph() const { return _averageDistanceFromStartGraph; }
+        private:
+            int _generation;
+            GridGraph* _bestEverGraph;
 
-    private:
-        const int _MAX_GENERATION;
-        int _generation;
-        int _numRow;
-        int _numColumn;
-        int _averageDistanceFromStartGraph;
-        const double _indivMutateProbability;
-        const double _geneMutateProbability;
-        Group *_group;
-        Cselab23Kimura::OdpGridGraphs::GridGraph *_bestEverGraph;
-
-    private:
-        GeneticAlgorithm() = delete;
-    };
+        private:
+            GeneticAlgorithm() = delete;
+        };
+    }
 }

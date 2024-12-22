@@ -60,7 +60,5 @@ Group RankingSelect::moveSurvivors(Group& childs, Group& parents, std::mt19937& 
         }
     }
 
-    std::cerr << "Cselab23Kimura::OdpGridGraphs::GA::SurvivorSelects::RankingSelect::moveSurvivor(Group, Group, std::mt19938) : " << std::endl;
-    std::cerr << "Unexpected Error" << std::endl;
-    exit(EXIT_FAILURE);
+    throw std::logic_error("Unexpected exception");
 }

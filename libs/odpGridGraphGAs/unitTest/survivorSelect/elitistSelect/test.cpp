@@ -27,10 +27,10 @@ bool select_elitist_individual() {
 
     int movedCount = 0;
     for(int i = 0; i < parents.population(); ++i) {
-        if(parents[i]->adjacent == nullptr) movedCount++;
+        if(parents[i]->isValidObject()) movedCount++;
     }
     for(int i = 0; i < childs.population(); ++i) {
-        if(childs[i]->adjacent == nullptr) movedCount++;
+        if(childs[i]->isValidObject()) movedCount++;
     }
     unitTest.assertEqualInt("count of moved individual is 1", movedCount, 1);
 

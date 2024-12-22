@@ -1,1 +1,2 @@
+add_subdirectory(gridGraph)
 add_subdirectory(edgesFileReader)

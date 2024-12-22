@@ -1,5 +1,5 @@
 #include "gaCsvRecorder.hpp"
-#include "geneticAlgorithm.hpp"
+#include "group.hpp"
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -15,12 +15,12 @@ GaCsvRecorder::GaCsvRecorder(const std::string& filepath): _ofs(std::ofstream(fi
     _ofs << "variation" << endl;
 }
 
-void GaCsvRecorder::record(const GeneticAlgorithm& ga) {
-    _ofs << ga.generation() << ",";
-    _ofs << ga.bestDiameter() << ",";
-    _ofs << ga.bestAspl() << ",";
-    _ofs << ga.averageASPL() << ",";
-    _ofs << ga.worstASPL() << ",";
-    _ofs << ga.indivVariation() << ",";
-    _ofs << ga.averageDistanceFromStartGraph() << endl;
+void GaCsvRecorder::record(int generation, const Group& group) {
+    _ofs << generation << ",";
+    _ofs << group.bestDiameter()   << ",";
+    _ofs << group.bestAspl()       << ",";
+    _ofs << group.averageAspl()    << ",";
+    _ofs << group.worstAspl()      << ",";
+    _ofs << group.indivVariation() << ",";
+    _ofs << endl;
 }

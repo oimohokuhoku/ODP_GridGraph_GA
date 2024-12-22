@@ -1,14 +1,13 @@
 #include "gaParameterTable.hpp"
-
 #include <iostream>
 #include <iomanip>
-#include "geneticAlgorithm.hpp"
+#include "group.hpp"
 using namespace Cselab23Kimura::OdpGridGraphs::GA;
 using std::cout;
 using std::endl;
 using std::setw;
 
-GAParameterTable::GAParameterTable() {
+GaParameterTable::GaParameterTable() {
     _stepWidth = 5;
     _diamWidth = 10;
     _asplDigit = 16;
@@ -19,7 +18,7 @@ GAParameterTable::GAParameterTable() {
     _defaultDoubleDigit = 5;
 }
 
-void GAParameterTable::showHedder() const {
+void GaParameterTable::showHedder() const {
     cout << std::left;
 
     cout << setw(_stepWidth) << "Step" << "| ";
@@ -33,18 +32,19 @@ void GAParameterTable::showHedder() const {
     cout << std::right;
 }
 
-void GAParameterTable::showParameter(const GeneticAlgorithm& ga) const {
+void GaParameterTable::showRow(int generation, const Group &group) const {
     cout << std::left;
 
-    cout << setw(_stepWidth) << ga.generation()   << "| ";
-    cout << setw(_diamWidth) << ga.bestDiameter() << "| ";
+    cout << setw(_stepWidth) << generation           << "| ";
+    cout << setw(_diamWidth) << group.bestDiameter() << "| ";
+
     cout << std::setprecision(_asplDigit);
-    cout << setw(_asplWidth) << ga.bestAspl()    << "| ";
-    cout << setw(_asplWidth) << ga.averageASPL() << "| ";
-    cout << setw(_asplWidth) << ga.worstASPL()   << "| ";
+    cout << setw(_asplWidth) << group.bestAspl()    << "| ";
+    cout << setw(_asplWidth) << group.averageAspl() << "| ";
+    cout << setw(_asplWidth) << group.worstAspl()   << "| ";
+
     cout << std::setprecision(_defaultDoubleDigit);
-    cout << setw(_variationWidth)    << ga.indivVariation() << "| ";
-    cout << ga.averageDistanceFromStartGraph() << "| ";
+    cout << setw(_variationWidth) << group.indivVariation() << "| ";
     cout << endl;
 
     cout << std::defaultfloat;

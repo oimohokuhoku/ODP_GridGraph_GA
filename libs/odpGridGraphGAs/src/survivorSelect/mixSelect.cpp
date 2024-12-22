@@ -31,8 +31,8 @@ Group MixSelect::mergeGroup(vector<optional<Group>>& groups) {
     int index = 0;
     for(auto& group: groups) {
         for(int i = 0; i < group->population(); ++i) 
-            result[index++] = std::move(*(*group)[i]);
+            result[index++] = std::move(group->get(i));
     }
 
-    return std::move(result);
+    return result;
 }

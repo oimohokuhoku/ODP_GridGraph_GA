@@ -1,5 +1,4 @@
 #include <iostream>
-#include <memory>
 #include <random>
 #include "odpGridGraphGAs.hpp"
 #include "odpGridGraphs.hpp"
@@ -7,12 +6,9 @@
 using namespace Cselab23Kimura::OdpGridGraphs;
 using namespace Cselab23Kimura::OdpGridGraphs::GA;
 using namespace Cselab23Kimura::CommonLibrarys;
-
 using std::cout;
 using std::endl;
 using std::string;
-using std::unique_ptr;
-using std::make_unique;
 
 static const string OPTION_NUM_ROW     = "-r";
 static const string OPTION_NUM_COLUMN  = "-c";
@@ -26,59 +22,79 @@ static const string OPTION_RESULT_FILENAME = "-f";
 static const string OPTION_SEED = "-seed";
 
 int main(int argc, char* argv[]) {
+    #ifdef DEBUG
+        cout << "Executing in Debug mode!" << endl;
+    #endif
+
     CommandLineArgument args(argc, argv);
-    GAConfiguration gaConfig;
-    gaConfig.setGraphNumRow(args.getValue<int>(OPTION_NUM_ROW)); 
-    gaConfig.setGraphNumColumn(args.getValue<int>(OPTION_NUM_COLUMN)); 
-    gaConfig.setGraphDegree(args.getValue<int>(OPTION_DEGREE)); 
-    gaConfig.setGraphMaxLength(args.getValue<int>(OPTION_MAX_LENGTH)); 
-    gaConfig.setMaxGeneration(args.getValue<int>(OPTION_MAX_GENERATION));
-    gaConfig.setPopulation(args.getValue<int>(OPTION_POPULATION));
-    gaConfig.setIndivMutateProbability(args.getValue<double>(OPTION_INDIV_MUTATE_PROBABILITY));
-    gaConfig.setGeneMutateProbability(args.getValue<double>(OPTION_GENE_MUTATE_PROBABILITY));
-    gaConfig.setSeed(args.getValue<int>(OPTION_SEED)); 
-    gaConfig.showConfigList();
+    int numRow    = args.getValue<int>(OPTION_NUM_ROW);
+    int numColumn = args.getValue<int>(OPTION_NUM_COLUMN);
+    int degree    = args.getValue<int>(OPTION_DEGREE);
+    int length    = args.getValue<int>(OPTION_MAX_LENGTH);
+    int maxGeneration = args.getValue<int>(OPTION_MAX_GENERATION);
+    int population    = args.getValue<int>(OPTION_POPULATION);
+    double indivMutateProbability = args.getValue<double>(OPTION_INDIV_MUTATE_PROBABILITY);
+    double geneMutateProbability  = args.getValue<double>(OPTION_GENE_MUTATE_PROBABILITY);
+    int seed = args.getValue<int>(OPTION_SEED);
+    string experimentName = args.getValue<string>(OPTION_RESULT_FILENAME);
 
-    string resultDirName   = "result";
-    string executedDirName = resultDirName + "/" + gaConfig.toDirectoryNameString();
-    if(args.existOption(OPTION_RESULT_FILENAME)) {
-        executedDirName = resultDirName + "/" + args.getValue<string>(OPTION_RESULT_FILENAME);
-    }
-    string transFileName   = executedDirName + "/transition.csv";
+    cout << "[Graph Constraints]" << endl;
+    cout << "- Node        : " << numRow << "x" << numColumn << endl;
+    cout << "- Degree      : " << degree << endl;
+    cout << "- Edge length : " << length << endl;
+    cout << "[GA Configuration]"  << endl;
+    cout << "- Population : "     << population     << endl;
+    cout << "- Max generation : " << maxGeneration  << endl;
+    cout << "- Mutation probability : (individual)" << indivMutateProbability << ", (gene)" << geneMutateProbability << endl;
+    cout << "[Other]"   << endl;
+    cout << "- Seed : " << seed << endl;
+    cout << "- Experiment Name : " << experimentName << endl;
+
+    string resultDirName     = "result";
+    string experimentDirPath = resultDirName + "/" + experimentName;
+    string transFileName     = experimentDirPath + "/transition.csv";
     Directory::create(resultDirName);
-    Directory::create(executedDirName);
+    Directory::create(experimentDirPath);
 
-    std::mt19937 random(gaConfig.seed());
+    std::mt19937 random(seed);
+    Grid grid(numRow, numColumn, degree, length);
 
-    Initialize* initialize = new RandomInitialize(Grid(gaConfig.graphNumRow(), gaConfig.graphNumColumn(), gaConfig.graphDegree(), gaConfig.graphMaxLength()));
-    CopySelects::CopySelect* copySelect = new CopySelects::RandomSelectWithoutReplacement(gaConfig.seed());
+    Initialize*                         initialize     = new RandomInitialize(grid);
+    CopySelects::CopySelect*            copySelect     = new CopySelects::DmsxfSelect(random);
     Crossovers::GenerateEmbeddMapUnits* embeddMapUnits = new Crossovers::GenerateOrthogonalBlockEmbeddMapUnits();
-    Crossovers::Crossover* crossover = new Crossovers::BlockCrossoverWithDMSXf(embeddMapUnits, 1.0);
-    Mutates::Mutate* mutate= new Mutates::TwoChangeMutate(gaConfig.indivMutateProbability(), gaConfig.geneMutateProbability());
-    SurvivorSelects::SurvivorSelect* survivorSelect = new SurvivorSelects::PassAllChild();
+    Crossovers::Crossover*              crossover      = new Crossovers::BlockCrossoverWithDMSXf(embeddMapUnits, 0.0);
+    Mutates::Mutate*                    mutate         = new Mutates::TwoChangeMutate(indivMutateProbability, geneMutateProbability);
+    SurvivorSelects::SurvivorSelect*    survivorSelect = new SurvivorSelects::PassAllChild();
     
-    GeneticAlgorithm ga(gaConfig, initialize, random);
-    GAParameterTable paramTable;
+    GaParameterTable paramTable;
     GaCsvRecorder csvRecorder(transFileName);
+
+    Group group = initialize->genearteInitialGroup(population, random);
+    GeneticAlgorithm ga(group);
     
     cout << endl;
     paramTable.showHedder();
-    paramTable.showParameter(ga);
-    csvRecorder.record(ga);
+    paramTable.showRow(ga.generation(), group);
+    csvRecorder.record(ga.generation(), group);
     while(true) {
-        ga.progressGeneration(
+        group = ga.progressGeneration(
+            group, 
             copySelect,
             crossover,
             mutate,
             survivorSelect,
             random
         );
-        paramTable.showParameter(ga);
-        csvRecorder.record(ga);
-        if(ga.end()) break;
+
+        paramTable.showRow(ga.generation(), group);
+        csvRecorder.record(ga.generation(), group);
+        if(
+            ga.generation() == maxGeneration ||
+            group.indivVariation() == 1
+        ) break;
     }
 
-    ga.saveBestEverEdgeFile(executedDirName);
+    EdgesFileWriter::write(group.bestIndiv(), "result.edges");
 
     delete embeddMapUnits;
     delete initialize;
@@ -86,5 +102,5 @@ int main(int argc, char* argv[]) {
     delete crossover;
     delete mutate;
     delete survivorSelect;
-    return 0;
+    return EXIT_SUCCESS;
 }

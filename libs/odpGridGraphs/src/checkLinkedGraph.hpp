@@ -8,7 +8,7 @@ namespace Cselab23Kimura::OdpGridGraphs
     public:
         CheckLinkedGraph() = default;
         bool checkLinked(const GridGraph &graph);
-        int dislinkedNode() const { return _disLinkedNode; };
+        inline int dislinkedNode() const noexcept { return _disLinkedNode; };
 
     private:
         int _disLinkedNode = -1;

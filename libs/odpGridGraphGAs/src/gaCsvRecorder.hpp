@@ -1,16 +1,14 @@
 #pragma once
-
 #include <string>
 #include <fstream>
 
 namespace Cselab23Kimura::OdpGridGraphs::GA {
-    class GeneticAlgorithm;
+    class Group;
 
     class GaCsvRecorder {
     public:
         GaCsvRecorder(const std::string& filepath);
-        void record(const GeneticAlgorithm& ga);
-
+        void record(int generation, const Group& group);
     private: 
         std::ofstream _ofs;
     };

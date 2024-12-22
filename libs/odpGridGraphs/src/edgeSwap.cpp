@@ -69,8 +69,8 @@ bool EdgeSwap::selectSwappedEdgeTourBFS(const GridGraph& graph, const Grid& grid
     }
     else {
         //startNodeと隣接する頂点を探索
-        for(int d = 0; d < graph.nodeDegrees[startNode]; ++d) {
-            int nextNode = graph.adjacent[startNode][d];
+        for(int d = 0; d < graph.nodeDegree(startNode); ++d) {
+            int nextNode = graph.adjacent(startNode, d);
 
             if(passed[nextNode]) continue;
 

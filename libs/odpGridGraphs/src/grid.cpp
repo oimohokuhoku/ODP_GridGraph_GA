@@ -12,13 +12,25 @@ Grid::Grid(int numRow, int numColumn, int degree, int maxLength) :
     maxLength(maxLength)
 {}
 
+bool Grid::operator==(const Grid& grid) const {
+    if(this->numRow    != grid.numRow)    return false;
+    if(this->numColumn != grid.numColumn) return false;
+    if(this->degree    != grid.degree)    return false;
+    if(this->maxLength != grid.maxLength) return false;
+    return true;
+}
+
+bool Grid::operator!=(const Grid& grid) const {
+    return !(*this == grid);
+}
+
 /// @brief 制約の辺長以内の距離にある頂点をまとめて取得
 vector<int> Grid::selectConnectableNodes(int node) const {
     int numNearNode = 0;
     vector<int> nearNodes(maxLength * maxLength * 4); //やや大きめにとってる
 
-    int row    = getRowIndex(node);
-    int column = getColumnIndex(node);
+    int row    = toRowIndex(node);
+    int column = toColumnIndex(node);
     for(int dRow = -1 * maxLength; dRow <= maxLength; ++dRow) {
         int nearRow = row + dRow;
         if(nearRow < 0) continue;
